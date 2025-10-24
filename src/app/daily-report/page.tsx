@@ -282,7 +282,7 @@ export default function DailyReportPage() {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
               />
             </div>
 
@@ -291,7 +291,7 @@ export default function DailyReportPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Department
               </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900">
                 <option>All Departments</option>
                 <option>Cargo Operations</option>
                 <option>Vessel Management</option>
@@ -304,7 +304,7 @@ export default function DailyReportPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Report Type
               </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900">
                 <option>Daily Summary</option>
                 <option>Detailed Report</option>
                 <option>Operations Only</option>
@@ -312,14 +312,11 @@ export default function DailyReportPage() {
             </div>
 
             {/* Buttons */}
-            <div className="pt-4 space-y-3">
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors">
-                Generate Preview
-              </button>
+            <div className="pt-4">
               <button
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
               >
                 {isExporting ? (
                   <>
@@ -330,7 +327,12 @@ export default function DailyReportPage() {
                     Exporting...
                   </>
                 ) : (
-                  'Export to PDF'
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Export to PDF
+                  </>
                 )}
               </button>
             </div>
