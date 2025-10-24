@@ -270,9 +270,9 @@ export default function DailyReportPage() {
       {/* Main Content */}
       <div className="flex h-[calc(100vh-140px)]">
         {/* Left Panel - Filters */}
-        <div className="w-1/3 pr-4 flex-shrink-0">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-6 text-gray-800">
+  <div className="w-1/3 pr-4 flex-shrink-0 flex flex-col h-full">
+  <div className="bg-white shadow-2xl rounded-xl p-8 my-4 border border-gray-100 h-full overflow-y-auto flex flex-col justify-start">
+          <h2 className="text-xl font-bold text-black mb-6">
             Report Filters
           </h2>
 
@@ -348,12 +348,12 @@ export default function DailyReportPage() {
       <div className="w-2/3 pl-2 overflow-y-auto flex justify-center items-start">
         <div
           ref={reportRef}
-          className="w-[210mm] bg-white shadow-xl p-8 my-4"
+          className="w-[210mm] bg-gradient-to-br from-white to-gray-50 shadow-2xl rounded-xl p-8 my-4 border border-gray-100"
           id="report-preview"
           style={{ pageBreakInside: 'auto' }}
         >
           {/* Header */}
-          <div className="flex items-center gap-4 pb-6 border-b-2 border-gray-200">
+          <div className="flex items-center gap-4 pb-6 border-b-2 border-gradient-to-r from-blue-200 to-purple-200">
             <Image
               src="/logo.png"
               alt="Port Authority Logo"
@@ -362,7 +362,7 @@ export default function DailyReportPage() {
               className="object-contain"
             />
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-black">
                 Port Authority Daily Report
               </h1>
               <p className="text-gray-600 mt-1">
@@ -378,34 +378,40 @@ export default function DailyReportPage() {
 
           {/* Summary Cards */}
           <div className="grid grid-cols-4 gap-4 mt-6">
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-              <div className="text-sm font-medium text-blue-600">Active Vessels</div>
-              <div className="text-3xl font-bold text-blue-900 mt-2">{totalVessels}</div>
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Active Vessels</div>
+              <div className="text-3xl font-bold bg-gradient-to-br from-blue-600 to-blue-800 bg-clip-text text-transparent mt-2">{totalVessels}</div>
             </div>
-            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-              <div className="text-sm font-medium text-green-600">Total Man-Hours</div>
-              <div className="text-3xl font-bold text-green-900 mt-2">{totalManHours}</div>
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-xs font-semibold text-green-600 uppercase tracking-wide">Total Man-Hours</div>
+              <div className="text-3xl font-bold bg-gradient-to-br from-green-600 to-green-800 bg-clip-text text-transparent mt-2">{totalManHours}</div>
             </div>
-            <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
-              <div className="text-sm font-medium text-orange-600">Work Areas</div>
-              <div className="text-3xl font-bold text-orange-900 mt-2">{totalWorkAreas}</div>
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-xs font-semibold text-orange-600 uppercase tracking-wide">Work Areas</div>
+              <div className="text-3xl font-bold bg-gradient-to-br from-orange-600 to-orange-800 bg-clip-text text-transparent mt-2">{totalWorkAreas}</div>
             </div>
-            <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-              <div className="text-sm font-medium text-red-600">Active Issues</div>
-              <div className="text-3xl font-bold text-red-900 mt-2">{activeIssues}</div>
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 border border-red-200 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-xs font-semibold text-red-600 uppercase tracking-wide">Active Issues</div>
+              <div className="text-3xl font-bold bg-gradient-to-br from-red-600 to-red-800 bg-clip-text text-transparent mt-2">{activeIssues}</div>
             </div>
           </div>
 
           {/* Charts Section */}
           <div className="grid grid-cols-2 gap-6 mt-6">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Man-Hours by Trade</h3>
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-5 shadow-lg border border-gray-200">
+              <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span className="w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+                Man-Hours by Trade
+              </h3>
               <div className="h-48">
                 <Bar data={barData} options={chartOptions} />
               </div>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Task Categories Distribution</h3>
+            <div className="bg-white/60 backdrop-blur-sm rounded-xl p-5 shadow-lg border border-gray-200">
+              <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span className="w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+                Task Categories Distribution
+              </h3>
               <div className="h-48">
                 <Pie data={pieData} options={{ ...chartOptions, plugins: { legend: { display: true, position: 'bottom' } } }} />
               </div>
@@ -414,23 +420,26 @@ export default function DailyReportPage() {
 
           {/* Daily Work Report Table */}
           <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Daily Work Report</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
+            <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <span className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+              Daily Work Report
+            </h3>
+            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
+              <table className="w-full border-collapse bg-white/80 backdrop-blur-sm">
                 <thead>
-                  <tr className="bg-gray-100 border-b-2 border-gray-300">
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Vessel</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Dock</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Day</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Weather</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Work Area</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Man-Hours</th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Issues</th>
+                  <tr className="bg-gradient-to-r from-blue-100 to-purple-100 border-b-2 border-blue-200">
+                    <th className="text-left py-3 px-4 font-bold text-gray-800">Vessel</th>
+                    <th className="text-left py-3 px-4 font-bold text-gray-800">Dock</th>
+                    <th className="text-left py-3 px-4 font-bold text-gray-800">Day</th>
+                    <th className="text-left py-3 px-4 font-bold text-gray-800">Weather</th>
+                    <th className="text-left py-3 px-4 font-bold text-gray-800">Work Area</th>
+                    <th className="text-left py-3 px-4 font-bold text-gray-800">Man-Hours</th>
+                    <th className="text-left py-3 px-4 font-bold text-gray-800">Issues</th>
                   </tr>
                 </thead>
                 <tbody>
                   {mockTableData.map((row, index) => (
-                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                    <tr key={index} className="border-b border-gray-100 hover:bg-blue-50/30 transition-colors">
                       <td className="py-3 px-4 text-gray-900 font-medium">{row.vessel}</td>
                       <td className="py-3 px-4 text-gray-600">{row.dockLocation}</td>
                       <td className="py-3 px-4 text-gray-600">{row.day}</td>
@@ -440,16 +449,16 @@ export default function DailyReportPage() {
                       <td className="py-3 px-4">
                         {row.issue.severity !== 'No Issue' ? (
                           <div className="text-sm">
-                            <div className={`font-medium ${
-                              row.issue.severity === 'Critical' ? 'text-red-600' : 
-                              row.issue.severity === 'Minor' ? 'text-yellow-600' : 'text-gray-600'
+                            <div className={`font-semibold px-2 py-1 rounded-md inline-block ${
+                              row.issue.severity === 'Critical' ? 'bg-red-100 text-red-700' : 
+                              row.issue.severity === 'Minor' ? 'bg-yellow-100 text-yellow-700' : 'text-gray-600'
                             }`}>
                               {row.issue.severity}
                             </div>
-                            <div className="text-gray-500">{row.issue.category}</div>
+                            <div className="text-gray-500 mt-1">{row.issue.category}</div>
                           </div>
                         ) : (
-                          <span className="text-green-600 text-sm">No Issues</span>
+                          <span className="text-green-600 text-sm font-medium bg-green-50 px-2 py-1 rounded-md inline-block">✓ No Issues</span>
                         )}
                       </td>
                     </tr>
@@ -461,50 +470,61 @@ export default function DailyReportPage() {
 
           {/* Work Details Section */}
           <div className="mt-6" style={{ pageBreakInside: 'auto', display: 'block', visibility: 'visible' }}>
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">Work Details & Issues</h3>
-            <div className="bg-yellow-100 border border-yellow-300 rounded p-2 mb-3">
-              <p className="text-sm text-yellow-800">📋 Detailed work information for each vessel</p>
+            <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <span className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+              Work Details & Issues
+            </h3>
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4 mb-4 shadow-sm">
+              <p className="text-sm text-yellow-800 font-medium flex items-center gap-2">
+                <span className="text-lg">📋</span>
+                Detailed work information for each vessel
+              </p>
             </div>
             <div className="space-y-3" style={{ display: 'block', visibility: 'visible' }}>
               {mockTableData.map((row, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <div key={index} className="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-gray-200 shadow-md hover:shadow-lg transition-all">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     <div>
-                      <h4 className="font-semibold text-gray-800 mb-1 text-sm">{row.vessel} - {row.workArea}</h4>
-                      <p className="text-xs text-gray-600 mb-2">
-                        <strong>Work:</strong> {row.workCompleted}
+                      <h4 className="font-bold text-gray-900 mb-2 text-sm flex items-center gap-2">
+                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        {row.vessel} - {row.workArea}
+                      </h4>
+                      <p className="text-xs text-gray-700 mb-2 leading-relaxed">
+                        <strong className="text-gray-900">Work:</strong> {row.workCompleted}
                       </p>
-                      <div className="flex flex-wrap gap-1 mb-2">
+                      <div className="flex flex-wrap gap-1.5 mb-2">
                         {row.taskTags.map((tag, tagIndex) => (
-                          <span key={tagIndex} className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">
+                          <span key={tagIndex} className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-xs px-2.5 py-1 rounded-lg font-medium shadow-sm">
                             {tag}
                           </span>
                         ))}
                       </div>
-                      <div className="text-xs text-gray-600">
-                        <strong>Man-Hours:</strong> W:{row.manHours.welders} P:{row.manHours.painting} F:{row.manHours.fitting} C:{row.manHours.cables}
+                      <div className="text-xs text-gray-700 bg-gray-50 px-2 py-1.5 rounded-lg">
+                        <strong className="text-gray-900">Man-Hours:</strong> W:{row.manHours.welders} P:{row.manHours.painting} F:{row.manHours.fitting} C:{row.manHours.cables}
                       </div>
                     </div>
                     <div>
                       {row.issue.severity !== 'No Issue' ? (
-                        <div className="bg-red-50 border border-red-200 rounded p-2">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className={`px-2 py-0.5 text-xs rounded font-medium ${
-                              row.issue.severity === 'Critical' ? 'bg-red-200 text-red-800' : 
-                              'bg-yellow-200 text-yellow-800'
+                        <div className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-xl p-3 shadow-sm">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span className={`px-2.5 py-1 text-xs rounded-lg font-bold shadow-sm ${
+                              row.issue.severity === 'Critical' ? 'bg-red-200 text-red-900' : 
+                              'bg-yellow-200 text-yellow-900'
                             }`}>
                               {row.issue.severity}
                             </span>
-                            <span className="text-xs text-gray-600">{row.issue.category}</span>
+                            <span className="text-xs text-gray-700 font-medium">{row.issue.category}</span>
                           </div>
-                          <p className="text-xs text-gray-700 mb-1">{row.issue.description}</p>
-                          <p className="text-xs text-gray-500">
-                            Est. Resolution: {row.issue.resolutionTime}h {row.issue.hasPhotos && '📷'}
+                          <p className="text-xs text-gray-800 mb-1.5 leading-relaxed">{row.issue.description}</p>
+                          <p className="text-xs text-gray-600 flex items-center gap-1">
+                            <span className="font-medium">Est. Resolution:</span> {row.issue.resolutionTime}h {row.issue.hasPhotos && '📷'}
                           </p>
                         </div>
                       ) : (
-                        <div className="bg-green-50 border border-green-200 rounded p-2">
-                          <span className="text-xs text-green-700 font-medium">No Issues</span>
+                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-3 shadow-sm">
+                          <span className="text-xs text-green-800 font-bold flex items-center gap-1">
+                            <span className="text-base">✓</span> No Issues Reported
+                          </span>
                         </div>
                       )}
                     </div>
