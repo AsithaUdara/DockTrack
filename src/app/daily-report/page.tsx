@@ -264,9 +264,9 @@ export default function DailyReportPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100">
       {/* Left Panel - Filters */}
-      <div className="w-1/3 p-4 overflow-y-auto">
+      <div className="w-1/3 p-4 flex-shrink-0">
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-6 text-gray-800">
             Report Filters
@@ -339,10 +339,10 @@ export default function DailyReportPage() {
       </div>
 
       {/* Right Panel - Report Preview */}
-      <div className="w-2/3 p-6 overflow-y-auto flex justify-center">
+      <div className="w-2/3 p-6 overflow-y-auto flex justify-center items-start">
         <div
           ref={reportRef}
-          className="w-[210mm] bg-white shadow-xl p-8"
+          className="w-[210mm] bg-white shadow-xl p-8 my-4"
           id="report-preview"
           style={{ pageBreakInside: 'auto' }}
         >
