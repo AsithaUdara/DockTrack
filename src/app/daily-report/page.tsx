@@ -89,6 +89,38 @@ export default function DailyReportPage() {
   );
   const [isExporting, setIsExporting] = useState(false);
   const reportRef = useRef<HTMLDivElement>(null);
+  // Toast state for right-side popup notifications
+  const [toast, setToast] = useState<{ title?: string; message: string; type: 'success' | 'error'; visible: boolean; time?: string }>({
+    title: undefined,
+    message: '',
+    type: 'success',
+    visible: false,
+    time: undefined,
+  });
+  const toastTimeoutRef = useRef<number | null>(null);
+
+  /**
+   * Show a richer toast notification.
+   * @param title Title of the toast (short)
+   * @param message Main message / details
+   * @param type 'success' | 'error'
+   * @param durationMs how long the toast stays visible (default 8000ms)
+   */
+  const showToast = (title: string, message: string, type: 'success' | 'error' = 'success', durationMs = 8000) => {
+    // clear previous timer
+    if (toastTimeoutRef.current) {
+      window.clearTimeout(toastTimeoutRef.current as unknown as number);
+      toastTimeoutRef.current = null;
+    }
+
+    setToast({ title, message, type, visible: true, time: new Date().toLocaleTimeString() });
+
+    // Auto-hide after durationMs
+    toastTimeoutRef.current = window.setTimeout(() => {
+      setToast((t) => ({ ...t, visible: false }));
+      toastTimeoutRef.current = null;
+    }, durationMs);
+  };
 
   // Calculate summary data
   const totalVessels = mockTableData.length;
@@ -248,12 +280,12 @@ export default function DailyReportPage() {
 
       // Generate filename with date
       const fileName = `Port_Authority_Daily_Report_${selectedDate}.pdf`;
-      pdf.save(fileName);
+  pdf.save(fileName);
 
-      alert(`PDF exported successfully! ✅ (${pageCount} pages)`);
+  showToast('Export complete', `${fileName} — ${pageCount} page(s) saved.`, 'success');
     } catch (error) {
-      console.error('Error exporting PDF:', error);
-      alert('Failed to export PDF. Please try again.');
+  console.error('Error exporting PDF:', error);
+  showToast('Export failed', String(error ?? 'Unknown error'), 'error');
     } finally {
       setIsExporting(false);
     }
@@ -544,6 +576,46 @@ export default function DailyReportPage() {
           </div>
         </div>
       </div>
+      </div>
+
+      {/* Toast / right-side popup (rich message, no progress bar) */}
+      <div aria-live="polite" className="fixed inset-0 pointer-events-none z-50">
+        <div className="flex items-start justify-end p-6">
+          <div className={"pointer-events-auto transform transition-all duration-300 " + (toast.visible ? 'translate-x-0 opacity-100' : 'translate-x-6 opacity-0')}>
+            <div className={"max-w-xs w-96 bg-white/85 backdrop-blur-md rounded-xl shadow-2xl p-4 border ring-1 ring-gray-100 flex flex-col gap-3 overflow-hidden"}>
+              <div className="flex items-start gap-3">
+                <div className={"w-1.5 h-10 rounded-full mt-1 " + (toast.type === 'success' ? 'bg-gradient-to-b from-emerald-400 to-emerald-600' : 'bg-gradient-to-b from-red-400 to-red-600')}></div>
+                <div className="flex-shrink-0">
+                  {toast.type === 'success' ? (
+                    <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-gray-900">{toast.title ?? (toast.type === 'success' ? 'Success' : 'Error')}</div>
+                  <div className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{toast.message}</div>
+                  {toast.time && (
+                    <div className="text-xs text-gray-400 mt-2">{toast.time}</div>
+                  )}
+                </div>
+                <div className="ml-2">
+                  <button
+                    onClick={() => setToast((t) => ({ ...t, visible: false }))}
+                    className="text-gray-400 hover:text-gray-600"
+                    aria-label="Close notification"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
