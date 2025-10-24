@@ -174,7 +174,7 @@ export default function DailyReportPage() {
           transform: 'scale(1)',
           transformOrigin: 'top left',
         },
-        filter: (node) => {
+        filter: () => {
           // Ensure all content is included
           return true;
         },
@@ -195,9 +195,6 @@ export default function DailyReportPage() {
         orientation: 'portrait',
       });
 
-      // Convert canvas to image
-      const imgData = dataUrl;
-
       // A4 dimensions in mm
       const pageWidth = 210;
       const pageHeight = 297;
@@ -207,7 +204,6 @@ export default function DailyReportPage() {
       // Calculate image height to maintain aspect ratio
       const imgWidth = img.width;
       const imgHeight = img.height;
-      const imgHeightMm = (imgHeight * pdfWidth) / imgWidth;
 
       // Always use multi-page handling for better content preservation
         let remainingHeight = imgHeight;
@@ -264,9 +260,17 @@ export default function DailyReportPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Left Panel - Filters */}
-      <div className="w-1/3 p-4 flex-shrink-0">
+    <div className="h-screen bg-gray-100 p-6">
+      {/* Page Heading */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Custom Report Generator</h1>
+        <p className="text-gray-600 mt-1">Generate and export customized daily reports</p>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex h-[calc(100vh-140px)]">
+        {/* Left Panel - Filters */}
+        <div className="w-1/3 pr-4 flex-shrink-0">
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-6 text-gray-800">
             Report Filters
@@ -341,7 +345,7 @@ export default function DailyReportPage() {
       </div>
 
       {/* Right Panel - Report Preview */}
-      <div className="w-2/3 p-6 overflow-y-auto flex justify-center items-start">
+      <div className="w-2/3 pl-2 overflow-y-auto flex justify-center items-start">
         <div
           ref={reportRef}
           className="w-[210mm] bg-white shadow-xl p-8 my-4"
@@ -519,6 +523,7 @@ export default function DailyReportPage() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
