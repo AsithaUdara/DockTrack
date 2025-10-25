@@ -45,6 +45,8 @@ export const mockDailyTasks: DailyTask[] = [
   { type: 'Hull Welding', photoCount: 7 },
   { type: 'Deck Painting', photoCount: 3 },
   { type: 'Engine Inspection', photoCount: 2 },
+  { type: 'Propeller Maintenance', photoCount: 4 },
+  { type: 'Electrical Wiring', photoCount: 5 },
 ];
 
 export const mockDailyIssues: DailyIssue[] = [
