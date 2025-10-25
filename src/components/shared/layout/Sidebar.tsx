@@ -61,7 +61,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="flex items-center">
             <div className="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center font-bold text-white text-lg">S</div>
             <div className="ml-3">
-              <p className="font-semibold text-gray-800">Supervisor Sam</p>
+              <p className="font-semibold text-gray-800">Supervisor Udara</p>
               <p className="text-sm text-gray-500">supervisor@cdl.lk</p>
             </div>
           </div>
