@@ -1,19 +1,51 @@
 // src/app/(supervisor)/reports/new/page.tsx
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Section1_WorkCompleted from '@/components/supervisor/reports/forms/Section1_WorkCompleted';
-import Section2_Manpower from '@/components/supervisor/reports/forms/Section2_Manpower';
 import Section3_MaterialsUsed from '@/components/supervisor/reports/forms/Section3_MaterialsUsed';
+import Section2_Manpower from '@/components/supervisor/reports/forms/Section2_Manpower';
 import Section4_EquipmentUsed from '@/components/supervisor/reports/forms/Section4_EquipmentUsed';
 import Section5_SafetyObservations from '@/components/supervisor/reports/forms/Section5_SafetyObservations';
 import Section6_QualityControl from '@/components/supervisor/reports/forms/Section6_QualityControl';
 import Section7_IssuesDelays from '@/components/supervisor/reports/forms/Section7_IssuesDelays';
 import Section8_ProgressSummary from '@/components/supervisor/reports/forms/Section8_ProgressSummary';
 import Section9_TomorrowPlan from '@/components/supervisor/reports/forms/Section9_TomorrowPlan';
+import Section10_Signatures from '@/components/supervisor/reports/forms/Section10_Signatures';
+import {
+  DailyTask,
+  DailyIssue,
+  MaterialUsed,
+  EquipmentUsed,
+  SafetyObservation,
+  QualityControl,
+  ProgressSummary,
+  TomorrowPlan,
+  Signature,
+  mockDailyTasks,
+  mockDailyIssues,
+  mockMaterialsUsed,
+  mockEquipmentUsed,
+  mockSafetyObservation,
+  mockQualityControl,
+  mockProgressSummary,
+  mockTomorrowPlan,
+} from '@/data/mock-daily-activity';
 
 export default function NewReportPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 10;
+  const router = useRouter();
+
+  // State for all sections
+  const [tasks, setTasks] = useState<(DailyTask & { images?: string[] })[]>(mockDailyTasks);
+  const [issues, setIssues] = useState<DailyIssue[]>(mockDailyIssues);
+  const [materials, setMaterials] = useState<MaterialUsed[]>(mockMaterialsUsed);
+  const [equipment, setEquipment] = useState<EquipmentUsed[]>(mockEquipmentUsed);
+  const [safety, setSafety] = useState<SafetyObservation>(mockSafetyObservation);
+  const [quality, setQuality] = useState<QualityControl>(mockQualityControl);
+  const [summary, setSummary] = useState<ProgressSummary>(mockProgressSummary);
+  const [tomorrowPlans, setTomorrowPlans] = useState<TomorrowPlan[]>(mockTomorrowPlan);
 
   const sections = [
     { number: 1, title: 'Work Completed' },
@@ -24,12 +56,31 @@ export default function NewReportPage() {
     { number: 6, title: 'Quality Control' },
     { number: 7, title: 'Issues & Delays' },
     { number: 8, title: 'Progress Summary' },
-    { number: 9, title: 'Tomorrow\'s Plan' },
+    { number: 9, title: "Tomorrow's Plan" },
     { number: 10, title: 'Signatures' },
   ];
 
-  const goToNextStep = () => setCurrentStep(prev => Math.min(prev + 1, totalSteps));
-  const goToPrevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
+  const goToNextStep = () => setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+  const goToPrevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+
+  const handleSubmit = (signature: Signature) => {
+    // Log the full report data (replace with API call in production)
+    const reportData = {
+      tasks,
+      issues,
+      materials,
+      equipment,
+      safety,
+      quality,
+      summary,
+      tomorrowPlans,
+      signature,
+    };
+    console.log('Submitted Report:', reportData);
+
+    // Optionally save to localStorage or send to backend
+    // localStorage.setItem('report', JSON.stringify(reportData));
+  };
 
   const renderSection = () => {
     switch (currentStep) {
@@ -51,11 +102,25 @@ export default function NewReportPage() {
         return <Section8_ProgressSummary />;
       case 9:
         return <Section9_TomorrowPlan />;
+      case 10:
+        return (
+          <Section10_Signatures
+            tasks={tasks}
+            issues={issues}
+            materials={materials}
+            equipment={equipment}
+            safety={safety}
+            quality={quality}
+            summary={summary}
+            tomorrowPlans={tomorrowPlans}
+            onSubmit={handleSubmit}
+          />
+        );
       default:
         return (
           <div className="text-center py-12">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Section {currentStep}: {sections[currentStep - 1]?.title}
+              Section {currentStep}: {sections[currentStep - 1]?.title || ''}
             </h3>
             <p className="text-gray-600">This section is coming soon...</p>
           </div>
@@ -101,7 +166,11 @@ export default function NewReportPage() {
               Next Section: {sections[currentStep]?.title || '...'} →
             </button>
           ) : (
-            <button className="w-full sm:w-auto px-5 py-2 bg-green-800 text-white font-semibold rounded-lg hover:bg-green-900">
+            <button
+              onClick={() => {}}
+              className="w-full sm:w-auto px-5 py-2 bg-green-800 text-white font-semibold rounded-lg hover:bg-green-900"
+              disabled
+            >
               Submit Report
             </button>
           )}
