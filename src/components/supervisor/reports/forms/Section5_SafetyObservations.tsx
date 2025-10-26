@@ -1,11 +1,27 @@
-// src/components/supervisor/reports/forms/Section5_SafetyObservations.tsx
 import { useState } from 'react';
-import { mockSafetyObservation, SafetyObservation } from '@/data/mock-daily-activity';
+
+interface SafetyObservation {
+  briefing: boolean;
+  briefingTime?: string;
+  attendees?: string;
+  ppeCompliance: string;
+  incidents: boolean;
+  incidentDescription?: string;
+}
+
+const mockSafetyObservation: SafetyObservation = {
+  briefing: false,
+  briefingTime: '',
+  attendees: '',
+  ppeCompliance: '100%',
+  incidents: false,
+  incidentDescription: '',
+};
 
 export default function Section5_SafetyObservations() {
   const [safety, setSafety] = useState<SafetyObservation>(mockSafetyObservation);
 
-  const updateSafety = (field: keyof SafetyObservation, value: string | boolean | number) => {
+  const updateSafety = (field: keyof SafetyObservation, value: string | boolean) => {
     setSafety({ ...safety, [field]: value });
   };
 
@@ -32,15 +48,15 @@ export default function Section5_SafetyObservations() {
                     type="text"
                     value={safety.briefingTime || ''}
                     onChange={(e) => updateSafety('briefingTime', e.target.value)}
-                    placeholder="Time (e.g., 7:00 AM)"
+                    placeholder="Time (e.g., 7:00 AM, 08:30)"
                     className="p-2 border border-gray-300 rounded-md text-gray-600"
                   />
                   <input
-                    type="number"
-                    value={safety.attendees || 0}
-                    onChange={(e) => updateSafety('attendees', parseInt(e.target.value))}
-                    placeholder="Attendees"
-                    className="p-2 border border-gray-300 rounded-md text-gray-600"
+                    type="text"
+                    value={safety.attendees || ''}
+                    onChange={(e) => updateSafety('attendees', e.target.value)}
+                    placeholder="Number of Attendees (e.g., 15, 20, 8)"
+                    className="p-2 border border-gray-300 rounded-md text-gray-600 w-56"
                   />
                 </>
               )}
@@ -52,7 +68,7 @@ export default function Section5_SafetyObservations() {
               type="text"
               value={safety.ppeCompliance}
               onChange={(e) => updateSafety('ppeCompliance', e.target.value)}
-              placeholder="PPE Compliance (e.g., 100%)"
+              placeholder="PPE Compliance Rate (e.g., 100%, 95%)"
               className="p-2 border border-gray-300 rounded-md text-gray-600"
             />
           </div>
@@ -67,6 +83,18 @@ export default function Section5_SafetyObservations() {
               <option value="Yes">Yes</option>
             </select>
           </div>
+          {safety.incidents && (
+            <div className="flex items-start">
+              <p className="text-gray-800 w-1/3">Incident Description:</p>
+              <textarea
+                value={safety.incidentDescription || ''}
+                onChange={(e) => updateSafety('incidentDescription', e.target.value)}
+                placeholder="Describe the incident in detail (What happened? When? Where? Who was involved? What actions were taken?)"
+                rows={4}
+                className="flex-1 p-2 border border-gray-300 rounded-md text-gray-600"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
