@@ -154,27 +154,6 @@ export default function NewReportPage() {
             </button>
           )}
         </div>
-        <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
-          <button className="w-full sm:w-auto px-5 py-2 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50">
-            Save as Draft
-          </button>
-          {currentStep < totalSteps ? (
-            <button
-              onClick={goToNextStep}
-              className="w-full sm:w-auto px-5 py-2 bg-blue-800 text-white font-semibold rounded-lg hover:bg-blue-900"
-            >
-              Next Section: {sections[currentStep]?.title || '...'} →
-            </button>
-          ) : (
-            <button
-              onClick={() => {}}
-              className="w-full sm:w-auto px-5 py-2 bg-green-800 text-white font-semibold rounded-lg hover:bg-green-900"
-              disabled
-            >
-              Submit Report
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );
