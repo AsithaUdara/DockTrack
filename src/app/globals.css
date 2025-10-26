@@ -27,7 +27,7 @@ body {
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
+    opacity: 1;
     transform: scaleY(0.95);
   }
   to {
