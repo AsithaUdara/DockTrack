@@ -1,210 +1,15 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useCallback, useEffect, ChangeEvent, FormEvent } from 'react';
-
-// Custom styles for number input placeholders and spinners
-const customStyles = `
-  input[type="number"]::placeholder {
-    color: #9CA3AF !important;
-    opacity: 1 !important;
-  }
-  input[type="number"]::-webkit-input-placeholder {
-    color: #9CA3AF !important;
-    opacity: 1 !important;
-  }
-  input[type="number"]::-moz-placeholder {
-    color: #9CA3AF !important;
-    opacity: 1 !important;
-  }
-  
-  /* Make spinner always visible and make the number value darker/more visible */
-  input[type="number"] {
-    color: #9CA3AF !important;
-    font-weight: 500 !important;
-  }
-  
-  /* Always show spinner buttons (remove hover requirement) */
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    opacity: 1 !important;
-    position: relative !important;
-    cursor: pointer !important;
-  }
-`;
-
-// --- Icon Components (Simulating Lucide Icons using Inline SVG for Single-File Constraint) ---
-const Icon = ({ children, className = 'w-5 h-5' }: { children: React.ReactNode, className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        {children}
-    </svg>
-);
-
-const ClipboardList = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-        <path d="M10 9h6" />
-        <path d="M10 13h6" />
-        <path d="M10 17h6" />
-    </Icon>
-);
-
-const Camera = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-        <circle cx="12" cy="13" r="4" />
-    </Icon>
-);
-
-const AlertTriangle = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-        <line x1="12" y1="9" x2="12" y2="13" />
-        <line x1="12" y1="17" x2="12.01" y2="17" />
-    </Icon>
-);
-
-const Send = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <line x1="22" y1="2" x2="11" y2="13" />
-        <polygon points="22 2 15 22 11 13 2 9 22 2" />
-    </Icon>
-);
-
-const CheckCircle = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-        <polyline points="22 4 12 14.01 9 11.01" />
-    </Icon>
-);
-
-const UserCheck = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="8.5" cy="7" r="4" />
-        <path d="M17 11l4 4-4 4" />
-    </Icon>
-);
-
-const Users = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M9 21v-2a4 4 0 0 1 3-3.87" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-    </Icon>
-);
-
-const Package = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M16.5 9.4l-9-5.19" />
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-        <line x1="12" y1="22.08" x2="12" y2="12" />
-    </Icon>
-);
-
-const Wrench = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-    </Icon>
-);
-
-const CloudUpload = (props: { className?: string }) => (
-    <Icon className={props.className}>
-        <path d="M4 14.8V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4.2" />
-        <path d="M16 10L12 6 8 10" />
-        <path d="M12 17V6" />
-    </Icon>
-);
-
-interface TradeResource {
-    hours: number | '';
-    count: number | '';
-}
-
-interface MaterialResource {
-    quantity: number | '';
-    unit: string;
-}
-
-interface EquipmentResource {
-    hours: number | '';
-    quantity: number | '';
-}
-
-// --- Type Definitions ---
-
-type ReportData = {
-    task: string;
-    assignedBy: string;
-    date: string;
-    vessel: string;
-    dockLocation: string;
-    taskStatus: string;
-    issueSeverity: 'none' | 'minor' | 'critical';
-    issueCategory: string;
-    issueDescription: string;
-    photoBeforeCount: number;
-    photoAfterCount: number;
-    estimatedHours: number | '';
-    personnelCount: number | '';
-    trades: {
-        welders: TradeResource;
-        fitters: TradeResource;
-        painters: TradeResource;
-        riggers: TradeResource;
-    };
-    materials: {
-        steel: MaterialResource;
-        paint: MaterialResource;
-        welding: MaterialResource;
-        bolts: MaterialResource;
-    };
-    equipment: {
-        crane: EquipmentResource;
-        welder: EquipmentResource;
-        grinder: EquipmentResource;
-        scaffold: EquipmentResource;
-    };
-};
-
-// --- Initial State ---
-const initialReportData: ReportData = {
-    task: '',
-    assignedBy: '',
-    date: '',
-    vessel: '',
-    dockLocation: '',
-    taskStatus: '',
-    issueSeverity: 'none',
-    issueCategory: 'N/A',
-    issueDescription: '',
-    photoBeforeCount: 0,
-    photoAfterCount: 0,
-    estimatedHours: '',
-    personnelCount: '',
-    trades: {
-        welders: { hours: '', count: '' },
-        fitters: { hours: '', count: '' },
-        painters: { hours: '', count: '' },
-        riggers: { hours: '', count: '' },
-    },
-    materials: {
-        steel: { quantity: '', unit: 'tons' },
-        paint: { quantity: '', unit: 'liters' },
-        welding: { quantity: '', unit: 'rods' },
-        bolts: { quantity: '', unit: 'pcs' },
-    },
-    equipment: {
-        crane: { hours: '', quantity: '' },
-        welder: { hours: '', quantity: '' },
-        grinder: { hours: '', quantity: '' },
-        scaffold: { hours: '', quantity: '' },
-    },
-};
-
-// --- Component ---
+import { ReportData, initialReportData } from '@/components/supervisor/daily-task-report/types';
+import { customStyles } from '@/components/supervisor/daily-task-report/customStyles';
+import { Send, CheckCircle, UserCheck } from '@/components/supervisor/daily-task-report/Icons';
+import Section1BasicInformation from '@/components/supervisor/daily-task-report/Section1BasicInformation';
+import Section2ResourceAllocation from '@/components/supervisor/daily-task-report/Section2ResourceAllocation';
+import Section3MaterialsUsed from '@/components/supervisor/daily-task-report/Section3MaterialsUsed';
+import Section4EquipmentUsed from '@/components/supervisor/daily-task-report/Section4EquipmentUsed';
+import Section5PhotoDocumentation from '@/components/supervisor/daily-task-report/Section5PhotoDocumentation';
+import Section6IssueReporting from '@/components/supervisor/daily-task-report/Section6IssueReporting';
 
 export default function DailyTaskReport() {
     const [report, setReport] = useState<ReportData>(initialReportData);
@@ -228,7 +33,7 @@ export default function DailyTaskReport() {
             // Handle trades
             if (parts[0] === 'trades' && parts.length === 3) {
                 const tradeKey = parts[1] as keyof ReportData['trades'];
-                const field = parts[2] as keyof TradeResource;
+                const field = parts[2] as 'hours' | 'count';
                 setReport(prev => ({
                     ...prev,
                     trades: {
@@ -245,7 +50,7 @@ export default function DailyTaskReport() {
             // Handle materials
             if (parts[0] === 'materials' && parts.length === 3) {
                 const materialKey = parts[1] as keyof ReportData['materials'];
-                const field = parts[2] as keyof MaterialResource;
+                const field = parts[2] as 'quantity' | 'unit';
                 setReport(prev => ({
                     ...prev,
                     materials: {
@@ -264,7 +69,7 @@ export default function DailyTaskReport() {
             // Handle equipment
             if (parts[0] === 'equipment' && parts.length === 3) {
                 const equipmentKey = parts[1] as keyof ReportData['equipment'];
-                const field = parts[2] as keyof EquipmentResource;
+                const field = parts[2] as 'hours' | 'quantity';
                 setReport(prev => ({
                     ...prev,
                     equipment: {
@@ -304,210 +109,19 @@ export default function DailyTaskReport() {
 
     // Custom color variables translated to Tailwind utility classes
     const primaryDark = 'bg-[#104E8B]';
-    const primaryText = 'text-[#104E8B]';
-    const accent500 = 'bg-[#FBBF24]';
-    const accentBorder = 'focus:border-blue-900 focus:ring-blue-900 focus:border-2';
-
-    // Photo Capture Component
-    const FileUploadBox = ({ label, id, field }: { label: string, id: string, field: 'photoBeforeCount' | 'photoAfterCount' }) => {
-        const fileCount = report[field];
-        return (
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-                <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg cursor-pointer transition duration-150 ${fileCount > 0 ? 'border-green-500' : 'border-gray-300 hover:border-[#104E8B]'}`}>
-                    <div className="space-y-1 text-center">
-                        {fileCount > 0 ? (
-                            <span className="text-green-600 font-medium">{fileCount} photo(s) captured.</span>
-                        ) : (
-                            <>
-                                <Camera className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                                <p className="text-gray-500">Click to take a photo</p>
-                            </>
-                        )}
-                        <input
-                            type="file"
-                            id={id}
-                            name={id}
-                            accept="image/*"
-                            className="sr-only"
-                            multiple
-                            onChange={(e) => handleFileSelect(e, field)}
-                        />
-                        <label htmlFor={id} className={`relative cursor-pointer text-sm font-medium ${primaryText} hover:opacity-80 transition`}>
-                            Take a Photo
-                        </label>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    // Trade rows rendering
-    const trades = [
-        { key: 'welders', label: 'Welders' },
-        { key: 'fitters', label: 'Fitters' },
-        { key: 'painters', label: 'Painters' },
-        { key: 'riggers', label: 'Riggers' },
-    ];
-
-    const renderTradeRows = trades.map((trade) => (
-        <div key={trade.key} className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4 border-b border-gray-200 last:border-b-0">
-            <div className="font-medium text-gray-800 flex items-center">
-                {trade.label}
-            </div>
-            <div>
-                <label htmlFor={`${trade.key}-hours`} className="block md:hidden text-xs text-gray-600 mb-1">Hours</label>
-                <input
-                    type="number"
-                    id={`${trade.key}-hours`}
-                    name={`trades.${trade.key}.hours`}
-                    min="0"
-                    value={report.trades[trade.key as keyof typeof report.trades].hours}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2"
-                    placeholder="e.g., 8"
-                />
-            </div>
-            <div>
-                <label htmlFor={`${trade.key}-count`} className="block md:hidden text-xs text-gray-600 mb-1">Count</label>
-                <input
-                    type="number"
-                    id={`${trade.key}-count`}
-                    name={`trades.${trade.key}.count`}
-                    min="0"
-                    value={report.trades[trade.key as keyof typeof report.trades].count}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2"
-                    placeholder="e.g., 2"
-                />
-            </div>
-        </div>
-    ));
-
-    // Material rows rendering
-    const materials = [
-        { key: 'steel', label: 'Steel' },
-        { key: 'paint', label: 'Paint' },
-        { key: 'welding', label: 'Welding Rods' },
-        { key: 'bolts', label: 'Bolts & Fasteners' },
-    ];
-
-    const renderMaterialRows = materials.map((material) => (
-        <div key={material.key} className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4 border-b border-gray-200 last:border-b-0">
-            <div className="font-medium text-gray-800 flex items-center">
-                {material.label}
-            </div>
-            <div>
-                <label htmlFor={`${material.key}-quantity`} className="block md:hidden text-xs text-gray-600 mb-1">Quantity</label>
-                <input
-                    type="number"
-                    id={`${material.key}-quantity`}
-                    name={`materials.${material.key}.quantity`}
-                    min="0"
-                    value={report.materials[material.key as keyof typeof report.materials].quantity}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2"
-                    placeholder="e.g., 50"
-                />
-            </div>
-            <div>
-                <label htmlFor={`${material.key}-unit`} className="block md:hidden text-xs text-gray-600 mb-1">Unit</label>
-                <select
-                    id={`${material.key}-unit`}
-                    name={`materials.${material.key}.unit`}
-                    value={report.materials[material.key as keyof typeof report.materials].unit}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2 text-gray-700"
-                >
-                    <option value="tons">Tons</option>
-                    <option value="kg">Kilograms</option>
-                    <option value="liters">Liters</option>
-                    <option value="gallons">Gallons</option>
-                    <option value="rods">Rods</option>
-                    <option value="pcs">Pieces</option>
-                    <option value="boxes">Boxes</option>
-                </select>
-            </div>
-        </div>
-    ));
-
-    // Equipment rows rendering
-    const equipmentList = [
-        { key: 'crane', label: 'Crane' },
-        { key: 'welder', label: 'Welding Machine' },
-        { key: 'grinder', label: 'Grinder' },
-        { key: 'scaffold', label: 'Scaffolding' },
-    ];
-
-    const renderEquipmentRows = equipmentList.map((equipment) => (
-        <div key={equipment.key} className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4 border-b border-gray-200 last:border-b-0">
-            <div className="font-medium text-gray-800 flex items-center">
-                {equipment.label}
-            </div>
-            <div>
-                <label htmlFor={`${equipment.key}-hours`} className="block md:hidden text-xs text-gray-600 mb-1">Hours</label>
-                <input
-                    type="number"
-                    id={`${equipment.key}-hours`}
-                    name={`equipment.${equipment.key}.hours`}
-                    min="0"
-                    value={report.equipment[equipment.key as keyof typeof report.equipment].hours}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2"
-                    placeholder="e.g., 8"
-                />
-            </div>
-            <div>
-                <label htmlFor={`${equipment.key}-quantity`} className="block md:hidden text-xs text-gray-600 mb-1">Quantity</label>
-                <input
-                    type="number"
-                    id={`${equipment.key}-quantity`}
-                    name={`equipment.${equipment.key}.quantity`}
-                    min="0"
-                    value={report.equipment[equipment.key as keyof typeof report.equipment].quantity}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2"
-                    placeholder="e.g., 2"
-                />
-            </div>
-        </div>
-    ));
-
-    // Radio Button Component
-    const IssueRadio = ({ id, value, color, label }: { id: string, value: ReportData['issueSeverity'], color: string, label: string }) => (
-        <div className="flex items-center">
-            <input
-                id={id}
-                name="issueSeverity"
-                type="radio"
-                value={value}
-                checked={report.issueSeverity === value}
-                onChange={handleChange}
-                className={`h-4 w-4 ${color} border-gray-300 focus:ring-${color.split('-')[1]} rounded-full`}
-            />
-            <label htmlFor={id} className="ml-3 block text-base font-medium text-gray-700">{label}</label>
-        </div>
-    );
 
     return (
         <div className="bg-gray-100 min-h-screen font-sans">
             {/* Custom styles for number input placeholders */}
             <style dangerouslySetInnerHTML={{ __html: customStyles }} />
             
-            {/* Success Modal */}
+            {/* SUCCESS MODAL */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                    <div className="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full transform transition-all duration-300 scale-100">
-                        <div className="flex flex-col items-center">
-                            <CheckCircle className="w-12 h-12 text-green-500 mb-3" />
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">Report Submitted!</h3>
-                            <p className="text-sm text-gray-600 text-center">Thank you, your daily task report has been successfully logged.</p>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className={`mt-4 px-4 py-2 ${primaryDark} text-white text-sm font-medium rounded-lg hover:opacity-90 transition`}>
-                                Close
-                            </button>
-                        </div>
+                <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center animate-fade-in">
+                    <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-sm text-center animate-scale-up">
+                        <CheckCircle className="w-16 h-16 mx-auto text-green-600 mb-4" />
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">Report Submitted!</h3>
+                        <p className="text-gray-600">Your daily task report has been successfully recorded.</p>
                     </div>
                 </div>
             )}
@@ -547,291 +161,68 @@ export default function DailyTaskReport() {
                     {/* PAGE 1: Sections 1 & 2 */}
                     {currentPage === 1 && (
                         <>
-                            {/* SECTION 1: BASIC INFORMATION */}
-                            <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-[#104E8B]">
-                        <h2 className={`text-xl font-bold ${primaryText} mb-6 flex items-center space-x-2`}>
-                            <ClipboardList className="w-6 h-6" />
-                            <span>1. Task & Location Details</span>
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                            {/* Task Name */}
-                            <label className="block">
-                                <span className="block text-sm font-medium text-gray-700 mb-1">Task</span>
-                                <input
-                                    type="text" id="task" name="task" required
-                                    value={report.task} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none `}
-                                    placeholder="e.g., Hull cleaning and inspection"
-                                />
-                            </label>
-
-                            {/* Assigned By */}
-                            <label className="block">
-                                <span className="block text-sm font-medium text-gray-700 mb-1">Assigned by</span>
-                                <input
-                                    type="text" id="assignedBy" name="assignedBy" required
-                                    value={report.assignedBy} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none`}
-                                    placeholder="e.g., Mr. Silva (Operations Manager)"
-                                />
-                            </label>
-
-                            {/* Date */}
-                            <label className="block">
-                                <span className="block text-sm font-medium text-gray-700 mb-1">Date</span>
-                                <input
-                                    type="date" id="date" name="date" required
-                                    value={report.date} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-black focus:outline-none`}
-                                    placeholder="Select date"
-                                />
-                            </label>
-
-                            {/* Vessel */}
-                            <label className="block">
-                                <span className="block text-sm font-medium text-gray-700 mb-1">Vessel</span>
-                                <input
-                                    type="text" id="vessel" name="vessel" required
-                                    value={report.vessel} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none`}
-                                    placeholder="e.g., MV 'Sea Serpent'"
-                                />
-                            </label>
-
-                            {/* Dock Location */}
-                            <label className="block">
-                                <span className="block text-sm font-medium text-gray-700 mb-1">Dock location</span>
-                                <input
-                                    type="text" id="dockLocation" name="dockLocation" required
-                                    value={report.dockLocation} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none`}
-                                    placeholder="e.g., Dry Dock 3, West Side"
-                                />
-                            </label>
-
-                            {/* Task Status (Dropdown Selection) */}
-                            <label className="block">
-                                <span className="block text-sm font-medium text-gray-700 mb-1">Task Status</span>
-                                <select
-                                    id="taskStatus" name="taskStatus" required
-                                    value={report.taskStatus} onChange={handleChange}
-                                    className={`w-full px-4  py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm text-gray-400 focus:outline-none`}
-                                >
-                                    <option value="" disabled className="text-gray-400">Select current status</option>
-                                    <option value="in-progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                    
-                                </select>
-                            </label>
-
-                        </div>
-                    </div>
-
-                    {/* SECTION 2: RESOURCE ALLOCATION & MAN-HOURS */}
-                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
-                        <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
-                            <Users className="w-6 h-6 text-[#104E8B]" />
-                            <span>2. Resource Allocation & Man-Hours</span>
-                        </h2>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            {/* Total Estimated Man-Hours */}
-                            <div>
-                                <label htmlFor="estimatedHours" className="block text-sm font-medium text-gray-700 mb-1">Total Estimated Man-Hours</label>
-                                <input type="number" id="estimatedHours" name="estimatedHours" required min="0" value={report.estimatedHours} onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:outline-none focus:ring-blue-900 focus:border-blue-900 transition duration-150 shadow-sm placeholder:text-gray-400 focus:border-2" placeholder="e.g., 48 " />
-                            </div>
-                            {/* Total Personnel Assigned */}
-                            <div>
-                                <label htmlFor="personnelCount" className="block text-sm font-medium text-gray-700 mb-1">Total Personnel Assigned</label>
-                                <input type="number" id="personnelCount" name="personnelCount" required min="0" value={report.personnelCount} onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-900 focus:border-blue-900 transition duration-150 shadow-sm placeholder:text-gray-400 focus:border-2" placeholder="e.g., 6" />
-                            </div>
-                        </div>
-
-                        {/* Detailed Resource Table */}
-                        <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Allocated Trades (Daily)</h3>
-                        <p className="text-sm text-gray-600 mb-4">Specify the hours and headcount for key trades contributing to the task.</p>
-                        
-                        <div className="space-y-4">
-                            {/* Column Headers for Desktop View */}
-                            <div className="hidden md:grid grid-cols-3 gap-4 font-bold text-xs uppercase text-gray-500 pb-1 border-b">
-                                <span className="col-span-1">Trade/Resource</span>
-                                <span className="col-span-1">Hours Allocated</span>
-                                <span className="col-span-1">Personnel Count</span>
-                            </div>
-
-                            {/* Rendered Trade Rows */}
-                            {renderTradeRows}
-                        </div>
-                    </div>
+                            <Section1BasicInformation report={report} handleChange={handleChange} />
+                            <Section2ResourceAllocation report={report} handleChange={handleChange} />
                         </>
                     )}
 
                     {/* PAGE 2: Sections 3 & 4 */}
                     {currentPage === 2 && (
                         <>
-                    {/* SECTION 3: MATERIALS USED */}
-                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
-                        <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
-                            <Package className="w-6 h-6 text-[#104E8B]" />
-                            <span>3. Materials Used</span>
-                        </h2>
-                        <p className="text-sm text-gray-600 mb-4">Specify the quantity and unit of materials consumed for this task.</p>
-                        
-                        <div className="space-y-4">
-                            {/* Column Headers for Desktop View */}
-                            <div className="hidden md:grid grid-cols-3 gap-4 font-bold text-xs uppercase text-gray-500 pb-1 border-b">
-                                <span className="col-span-1">Material Type</span>
-                                <span className="col-span-1">Quantity</span>
-                                <span className="col-span-1">Unit</span>
-                            </div>
-
-                            {/* Rendered Material Rows */}
-                            {renderMaterialRows}
-                        </div>
-                    </div>
-
-                    {/* SECTION 4: EQUIPMENT USED */}
-                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
-                        <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
-                            <Wrench className="w-6 h-6 text-[#104E8B]" />
-                            <span>4. Equipment Used</span>
-                        </h2>
-                        <p className="text-sm text-gray-600 mb-4">Specify the hours operated and quantity of equipment used for this task.</p>
-                        
-                        <div className="space-y-4">
-                            {/* Column Headers for Desktop View */}
-                            <div className="hidden md:grid grid-cols-3 gap-4 font-bold text-xs uppercase text-gray-500 pb-1 border-b">
-                                <span className="col-span-1">Equipment Type</span>
-                                <span className="col-span-1">Hours Operated</span>
-                                <span className="col-span-1">Quantity</span>
-                            </div>
-
-                            {/* Rendered Equipment Rows */}
-                            {renderEquipmentRows}
-                        </div>
-                    </div>
+                            <Section3MaterialsUsed report={report} handleChange={handleChange} />
+                            <Section4EquipmentUsed report={report} handleChange={handleChange} />
                         </>
                     )}
 
                     {/* PAGE 3: Sections 5 & 6 */}
                     {currentPage === 3 && (
                         <>
-                    {/* SECTION 5: TASK PHOTO UPDATING */}
-                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
-                        <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
-                            <Camera className="w-6 h-6" />
-                            <span>5. Photo Documentation</span>
-                        </h2>
-                        <p className="text-sm text-gray-600 mb-4">Upload high-resolution images showing the workspace *before* and *after* the task.</p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                            {/* Before Task Photo */}
-                            <FileUploadBox
-                                label="Before the Task"
-                                id="photo-before"
-                                field="photoBeforeCount"
-                            />
-
-                            {/* After Task Photo */}
-                            <FileUploadBox
-                                label="After the Task"
-                                id="photo-after"
-                                field="photoAfterCount"
-                            />
-                        </div>
-                    </div>
-
-                    {/* SECTION 6: ISSUE REPORTING */}
-                    <div className={`bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900 ${accent500.replace('bg-', 'border-')}`}>
-                        <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
-                            <AlertTriangle className="w-6 h-6 text-blue-900" />
-                            <span>6. Issue Reporting</span>
-                        </h2>
-
-                        {/* Issue Severity (Radio Buttons) */}
-                        <fieldset className="mb-6">
-                            <legend className="text-sm font-medium text-gray-700 mb-3">Select Issue Severity</legend>
-                            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-8">
-                                <IssueRadio id="issue-none" value="none" color="text-green-600" label="No Issue Found" />
-                                <IssueRadio id="issue-minor" value="minor" color="text-yellow-600" label="Minor Issue" />
-                                <IssueRadio id="issue-critical" value="critical" color="text-red-600" label="Critical Issue" />
-                            </div>
-                        </fieldset>
-
-                        {/* Issue Category (Dropdown) */}
-                        <label className="block mb-6">
-                            <span className="block text-sm font-medium text-gray-700 mb-1">Issue Category (if applicable)</span>
-                            <select
-                                id="issueCategory" name="issueCategory"
-                                value={report.issueCategory} onChange={handleChange}
-                                className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm text-gray-400`}
-                            >
-                                <option value="N/A" disabled className="text-gray-400">Select category...</option>
-                                <option value="mechanical">Mechanical Failure</option>
-                                <option value="electrical">Electrical Fault</option>
-                                <option value="corrosion">Severe Corrosion/Damage</option>
-                                <option value="material">Material Shortage</option>
-                                <option value="safety">Safety Hazard</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </label>
-
-                        {/* Description Field */}
-                        <label className="block">
-                            <span className="block text-sm font-medium text-gray-700 mb-1 ">Issue Description / Supervisor Notes</span>
-                            <textarea
-                                id="issueDescription" name="issueDescription" rows={4}
-                                value={report.issueDescription} onChange={handleChange}
-                                className={`w-full px-4 py-3 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none `}
-                                placeholder="Provide detailed notes on the issue, required actions, or any special observations."
-                            ></textarea>
-                        </label>
-                    </div>
-
-                    {/* SUBMIT BUTTON - Only on Page 3 */}
-                    <div className="pt-4 flex justify-end">
-                        <button type="submit" className={`px-8 py-3 ${primaryDark} text-white text-lg font-semibold rounded-xl shadow-lg hover:opacity-90 transition duration-300 flex items-center justify-center space-x-2 transform hover:scale-[1.01] active:scale-[0.99]`}>
-                            <Send className="w-5 h-5" />
-                            <span>Submit Daily Report</span>
-                        </button>
-                    </div>
+                            <Section5PhotoDocumentation report={report} handleFileSelect={handleFileSelect} />
+                            <Section6IssueReporting report={report} handleChange={handleChange} />
                         </>
                     )}
 
                     {/* NAVIGATION BUTTONS */}
                     <div className="flex justify-between items-center pt-6">
-                        <button
-                            type="button"
-                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                            disabled={currentPage === 1}
-                            className={`px-6 py-2 rounded-lg font-medium transition duration-200 ${
-                                currentPage === 1
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-blue-900 text-white hover:bg-blue-800'
-                            }`}
-                        >
-                            ← Previous
-                        </button>
+                        {/* Previous Button - Hidden on first page */}
+                        {currentPage > 1 && (
+                            <button
+                                type="button"
+                                onClick={() => setCurrentPage(prev => prev - 1)}
+                                className="px-6 py-2 rounded-lg font-medium transition duration-200 bg-blue-900 text-white hover:bg-blue-800"
+                            >
+                                ← Previous
+                            </button>
+                        )}
+                        
+                        {/* Spacer for first page to push Next button to the right */}
+                        {currentPage === 1 && <div></div>}
                         
                         <div className="text-sm text-gray-600">
                             Page {currentPage} of {totalPages}
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                            disabled={currentPage === totalPages}
-                            className={`px-6 py-2 rounded-lg font-medium transition duration-200 ${
-                                currentPage === totalPages
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-blue-900 text-white hover:bg-blue-800'
-                            }`}
-                        >
-                            Next →
-                        </button>
+                        {/* Next Button - Shown on pages 1 and 2 */}
+                        {currentPage < totalPages && (
+                            <button
+                                type="button"
+                                onClick={() => setCurrentPage(prev => prev + 1)}
+                                className="px-6 py-2 rounded-lg font-medium transition duration-200 bg-blue-900 text-white hover:bg-blue-800"
+                            >
+                                Next →
+                            </button>
+                        )}
+
+                        {/* Submit Button - Only on last page (page 3) */}
+                        {currentPage === totalPages && (
+                            <button 
+                                type="submit" 
+                                className="px-6 py-2 rounded-lg font-medium transition duration-200 bg-blue-900 text-white hover:bg-blue-800 flex items-center justify-center space-x-2"
+                            >
+                                <Send className="w-5 h-5" />
+                                <span>Submit Report</span>
+                            </button>
+                        )}
                     </div>
                 </form>
             </main>
