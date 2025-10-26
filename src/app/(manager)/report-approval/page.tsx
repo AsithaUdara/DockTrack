@@ -112,7 +112,7 @@ export default function DailyReportApproval() {
     const handleApprove = () => {
         setApprovalStatus('approved');
         setNotificationType('success');
-        setNotificationMessage('Report Approved Successfully! Approval notification has been sent to the supervisor.');
+        setNotificationMessage('Successfully approved. Final report has been sent to the Supervisor.');
         setShowNotification(true);
         // In real app: send to backend
     };
