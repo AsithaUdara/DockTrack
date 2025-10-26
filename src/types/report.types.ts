@@ -115,3 +115,14 @@ export interface ManagerComment {
   timestamp: string;
   type: 'approval' | 'feedback' | 'question';
 }
+
+// Simple Report type for basic report data
+export type ReportStatus = 'Draft' | 'Pending' | 'Approved' | 'Revision';
+
+export interface Report {
+  id: string;
+  vesselName: string;
+  date: string;
+  dayOfProject: number;
+  status: ReportStatus;
+}

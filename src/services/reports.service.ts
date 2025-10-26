@@ -1,54 +1,87 @@
 // src/services/reports.service.ts
+// Service layer for Reports management
 
-import { mockDailyReports, mockReportDetails } from '@/data/mock-reports';
-import { DailyReport, ReportDetail } from '@/types/report.types';
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+import { mockReports } from '@/data/mock-reports';
+import { Report } from '@/types/project.types';
 
 export class ReportsService {
-  static async getDailyReports(projectId?: string): Promise<DailyReport[]> {
-    await delay(600);
-    if (projectId) {
-      return mockDailyReports.filter(r => r.projectId === projectId);
+  // Simulate API delay
+  private static delay(ms: number = 500): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // Get all reports
+  static async getAllReports(): Promise<Report[]> {
+    await this.delay();
+    return mockReports;
+  }
+
+  // Get report by ID
+  static async getReportById(id: string): Promise<Report | null> {
+    await this.delay();
+    const report = mockReports.find(r => r.id === id);
+    return report || null;
+  }
+
+  // Get reports by project ID
+  static async getReportsByProjectId(projectId: string): Promise<Report[]> {
+    await this.delay();
+    return mockReports.filter(r => r.projectId === projectId);
+  }
+
+  // Get reports by status
+  static async getReportsByStatus(status: string): Promise<Report[]> {
+    await this.delay();
+    return mockReports.filter(r => r.status === status);
+  }
+
+  // Get pending reports
+  static async getPendingReports(): Promise<Report[]> {
+    await this.delay();
+    return mockReports.filter(r => r.status === 'Pending');
+  }
+
+  // Get reports by priority
+  static async getReportsByPriority(priority: string): Promise<Report[]> {
+    await this.delay();
+    return mockReports.filter(r => r.priority === priority);
+  }
+
+  // Approve report
+  static async approveReport(reportId: string): Promise<boolean> {
+    await this.delay();
+    const report = mockReports.find(r => r.id === reportId);
+    if (report) {
+      report.status = 'Approved';
+      return true;
     }
-    return mockDailyReports;
+    return false;
   }
 
-  static async getReportById(id: string): Promise<ReportDetail | null> {
-    await delay(500);
-    return mockReportDetails[id] || null;
+  // Reject report
+  static async rejectReport(reportId: string): Promise<boolean> {
+    await this.delay();
+    const report = mockReports.find(r => r.id === reportId);
+    if (report) {
+      report.status = 'Rejected';
+      return true;
+    }
+    return false;
   }
 
-  static async getReportsByDateRange(startDate: string, endDate: string): Promise<DailyReport[]> {
-    await delay(600);
-    return mockDailyReports.filter(r => r.date >= startDate && r.date <= endDate);
-  }
-
-  static async getReportsByStatus(status: string): Promise<DailyReport[]> {
-    await delay(500);
-    if (status === 'all') return mockDailyReports;
-    return mockDailyReports.filter(r => r.status === status);
-  }
-
-  static async searchReports(query: string): Promise<DailyReport[]> {
-    await delay(600);
-    const lowercaseQuery = query.toLowerCase();
-    return mockDailyReports.filter(r => 
-      r.reportId.toLowerCase().includes(lowercaseQuery) ||
-      r.projectName.toLowerCase().includes(lowercaseQuery) ||
-      r.supervisorName.toLowerCase().includes(lowercaseQuery)
-    );
-  }
-
-  static async approveReport(id: string, comment: string): Promise<boolean> {
-    await delay(800);
-    console.log(`Report ${id} approved with comment: ${comment}`);
-    return true;
-  }
-
-  static async rejectReport(id: string, reason: string): Promise<boolean> {
-    await delay(800);
-    console.log(`Report ${id} rejected with reason: ${reason}`);
-    return true;
+  // Get report statistics
+  static async getReportStats(): Promise<{
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+  }> {
+    await this.delay();
+    return {
+      total: mockReports.length,
+      pending: mockReports.filter(r => r.status === 'Pending').length,
+      approved: mockReports.filter(r => r.status === 'Approved').length,
+      rejected: mockReports.filter(r => r.status === 'Rejected').length,
+    };
   }
 }

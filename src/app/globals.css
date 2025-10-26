@@ -4,13 +4,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* -------- Base (mobile + light/dark aware) -------- */
 @layer base {
+  :root {
+    /* Let the browser know we can handle both themes */
+    color-scheme: light dark;
+  }
+
+  html,
   body {
-    @apply bg-slate-900 text-white antialiased;
+    @apply h-full;
+  }
+
+  /* Default to light UI so white pages render correctly.
+     Dark pages/components can still use Tailwind's `dark:` classes. */
+  body {
+    @apply antialiased bg-white text-slate-900;
+    -webkit-tap-highlight-color: transparent; /* nicer mobile taps */
+  }
+
+  /* Respect user's dark preference for global pages that don't override */
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-slate-900 text-white;
+    }
   }
 }
 
+/* -------- Handy mobile utilities -------- */
 @layer utilities {
+  /* Hide scrollbars while preserving scrollability */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -18,22 +41,69 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Safe-area helpers for devices with notches (iOS, etc.) */
+  .safe-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-pl {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-pr {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Responsive horizontal padding for page shells */
+  .container-px {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
 }
 
-/* Custom scrollbar for dark theme */
+/* -------- Custom scrollbars (light & dark) -------- */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-slate-800;
+/* Light theme scrollbar */
+@media (prefers-color-scheme: light) {
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-200;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-slate-600 rounded-full;
+/* Dark theme scrollbar */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-800;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-600 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-500;
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-500;
+/* -------- Optional composables (non-invasive) -------- */
+@layer components {
+  /* Reusable card shell that adapts to theme */
+  .card {
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm;
+    @apply dark:bg-slate-800 dark:border-slate-700;
+  }
+
+  /* Compact mobile-friendly table wrapper */
+  .table-wrap {
+    @apply w-full overflow-x-auto scrollbar-hide;
+  }
 }

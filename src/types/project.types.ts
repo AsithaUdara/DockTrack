@@ -1,33 +1,46 @@
 // src/types/project.types.ts
+// Type definitions for Manager Dashboard
 
 export interface Project {
   id: string;
-  name: string;
   vesselName: string;
-  vesselImage: string;
-  progress: number;
-  daysRemaining: number;
-  status: 'active' | 'pending' | 'completed' | 'on-hold';
-  clientName: string;
-  startDate: string;
-  endDate: string;
+  projectType: string;
   manager: string;
-  criticalIssues: number;
+  status: 'On Track' | 'At Risk' | 'Delayed' | 'Completed' | 'Cancelled' | 'On Hold'; // Added 'Completed', 'Cancelled', 'On Hold' statuses
+  progress: number; // 0-100
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
   pendingReports: number;
+  totalReports: number;
+  workers: number;
+  priority: 'low' | 'medium' | 'high';
+  projectStatus: 'active' | 'completed' | 'upcoming' | 'cancelled' | 'on-hold';
+  imageUrl?: string; // Added optional imageUrl property
 }
 
 export interface DashboardStats {
   activeProjects: number;
-  pendingApprovals: number;
-  todayManHours: number;
-  criticalIssues: number;
+  pendingReports: number;
+  totalWorkers: number;
+  criticalAlerts: number;
 }
 
 export interface RecentActivity {
   id: string;
-  type: 'report' | 'issue' | 'approval' | 'update';
-  message: string;
+  type: 'report' | 'alert' | 'approval' | 'update';
+  title: string;
+  project: string;
   timestamp: string;
+}
+
+export interface Report {
+  id: string;
+  projectId: string;
   projectName: string;
-  priority?: 'high' | 'medium' | 'low';
+  reportType: string;
+  submittedBy: string;
+  submittedDate: string;
+  status: 'Pending' | 'Approved' | 'Rejected';
+  priority: 'low' | 'medium' | 'high';
+  description: string;
 }

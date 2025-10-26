@@ -1,195 +1,343 @@
-// src/app/(manager)/reports/page.tsx
-
+// src/app/manager/reports/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import ReportsList from '@/components/manager/reports/ReportsList';
-import { ReportsService } from '@/services/reports.service';
-import { DailyReport } from '@/types/report.types';
 
-export default function ManagerReportsPage() {
+import HeaderWithSidebar from '@/components/shared/layout/Header';
+import { ReportsService } from '@/services/reports.service';
+import { ManagerService } from '@/services/manager.service';
+import { Report, Project } from '@/types/project.types';
+
+export default function ReportsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectId = searchParams.get('project');
 
-  const [reports, setReports] = useState<DailyReport[]>([]);
-  const [filteredReports, setFilteredReports] = useState<DailyReport[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'Pending' | 'Approved' | 'Rejected'>('all');
 
   useEffect(() => {
-    const fetchReports = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await ReportsService.getDailyReports(projectId || undefined);
-        setReports(data);
-        setFilteredReports(data);
-      } catch (error) {
-        console.error('Error fetching reports:', error);
+        if (projectId) {
+          const [projectData, reportsData] = await Promise.all([
+            ManagerService.getProjectById(projectId),
+            ReportsService.getReportsByProjectId(projectId),
+          ]);
+          setProject(projectData ?? null);
+          setReports(reportsData ?? []);
+        } else {
+          const reportsData = await ReportsService.getAllReports();
+          setReports(reportsData ?? []);
+        }
+      } catch (e) {
+        console.error('Error fetching reports:', e);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchReports();
+    fetchData();
   }, [projectId]);
 
-  useEffect(() => {
-    let filtered = reports;
-
-    // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter(r =>
-        r.reportId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.projectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.supervisorName.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+  const handleApprove = async (reportId: string) => {
+    try {
+      await ReportsService.approveReport(reportId);
+      setReports(prev => prev.map(r => (r.id === reportId ? { ...r, status: 'Approved' as const } : r)));
+    } catch (e) {
+      console.error('Error approving report:', e);
     }
-
-    // Apply status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(r => r.status === statusFilter);
-    }
-
-    setFilteredReports(filtered);
-  }, [searchQuery, statusFilter, reports]);
-
-  const handleReportClick = (reportId: string) => {
-    router.push(`/manager/reports/${reportId}`);
   };
 
+  const handleReject = async (reportId: string) => {
+    try {
+      await ReportsService.rejectReport(reportId);
+      setReports(prev => prev.map(r => (r.id === reportId ? { ...r, status: 'Rejected' as const } : r)));
+    } catch (e) {
+      console.error('Error rejecting report:', e);
+    }
+  };
+
+  const filteredReports = reports.filter((report) => {
+    const q = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      (report.reportType || '').toLowerCase().includes(q) ||
+      (report.submittedBy || '').toLowerCase().includes(q) ||
+      (report.projectName || '').toLowerCase().includes(q) ||
+      (report.id || '').toLowerCase().includes(q);
+
+    const matchesStatus = statusFilter === 'all' || report.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const statusBadge = (status: string) => {
+    switch (status) {
+      case 'Pending':
+        return 'bg-amber-50 text-amber-700 border border-amber-200 rounded-full';
+      case 'Approved':
+        return 'bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full';
+      case 'Rejected':
+        return 'bg-rose-50 text-rose-700 border border-rose-200 rounded-full';
+      default:
+        return 'bg-gray-50 text-gray-600 border border-gray-200 rounded-full';
+    }
+  };
+
+  const leftBorderByStatus = (status: string) => {
+    if (status === 'Pending') return 'border-l-4 border-amber-400';
+    if (status === 'Approved') return 'border-l-4 border-emerald-500';
+    if (status === 'Rejected') return 'border-l-4 border-rose-500';
+    return 'border-l-4 border-slate-300';
+    };
+
+  // Loading view inside the shared shell (keeps sidebar visible)
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading reports...</p>
+      <HeaderWithSidebar
+        title="Reports"
+        active="Reports"
+        userName="Manager John Silva"
+        userEmail="manager@cdl.lk"
+      >
+        <div className="min-h-[50vh] flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003d82] mx-auto mb-3" />
+            <p className="text-gray-600">Loading reports…</p>
+          </div>
         </div>
-      </div>
+      </HeaderWithSidebar>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
-      {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => router.push('/manager/dashboard')}
-                className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
-              >
-                <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+    <HeaderWithSidebar
+      title={project ? `Reports · ${project.vesselName}` : 'Reports'}
+      active="Reports"
+      userName="Manager John Silva"
+      userEmail="manager@cdl.lk"
+    >
+      {/* Page header */}
+      <div className="mb-5 sm:mb-7">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0a3b76]">
+              {project ? project.vesselName : 'All Reports'}
+            </h1>
+            <p className="mt-1 text-sm sm:text-base text-slate-600">
+              {project ? project.projectType : 'Review and manage submitted reports'}
+            </p>
+          </div>
+          {project && (
+            <button
+              onClick={() => router.push('/manager/reports')}
+              className="hidden sm:inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium border border-slate-300 hover:bg-slate-50"
+            >
+              View all
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Search / Filters */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-2">
+              Search Reports
+            </label>
+            <input
+              type="text"
+              placeholder="Search by report ID, project, or supervisor…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-3 sm:px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003d82] focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 mb-2">
+              Filter by Status
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
+              className="w-full px-3 sm:px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003d82] focus:border-transparent"
+            >
+              <option value="all">All Reports</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Project-specific table view */}
+      {project ? (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+          <div className="px-4 sm:px-6 py-4 border-b border-slate-200">
+            <h2 className="text-base sm:text-lg font-semibold text-slate-900">Daily Reports</h2>
+          </div>
+
+          {/* horizontal scroll on small screens */}
+          <div className="responsive-scroll overflow-x-auto">
+            <table className="min-w-[720px] w-full">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Date</th>
+                  <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Report ID</th>
+                  <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Submitted By</th>
+                  <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
+                  <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Actions</th>
+                  <th className="px-3 sm:px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Review</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200">
+                {filteredReports.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
+                      No reports for this project
+                    </td>
+                  </tr>
+                ) : (
+                  filteredReports.map((r) => (
+                    <tr key={r.id} className="hover:bg-slate-50">
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-slate-800">{r.submittedDate}</td>
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 font-mono">{r.id}</td>
+                      <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-slate-700">{r.submittedBy}</td>
+                      <td className="px-3 sm:px-4 py-3">
+                        <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold ${statusBadge(r.status)}`}>
+                          {r.status}
+                        </span>
+                      </td>
+                      <td className="px-3 sm:px-4 py-3">
+                        {r.status === 'Pending' ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleApprove(r.id)}
+                              className="px-3 sm:px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleReject(r.id)}
+                              className="px-3 sm:px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-medium rounded-lg"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-xs sm:text-sm text-slate-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-3 sm:px-4 py-3">
+                        <button
+                          onClick={() => router.push(`/manager/reports/${r.id}`)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium
+                                     text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50"
+                        >
+                          View
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        // All reports card list (restyled, green/red buttons)
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+          <div className="px-4 sm:px-6 py-4 border-b border-slate-200">
+            <h2 className="text-base sm:text-lg font-semibold text-slate-900">
+              Reports List ({filteredReports.length})
+            </h2>
+          </div>
+
+          <div className="p-4 sm:p-6">
+            {filteredReports.length === 0 ? (
+              <div className="text-center py-12 text-slate-500">No reports found</div>
+            ) : (
+              <div className="space-y-4">
+                {filteredReports.map((r) => (
+                  <div
+                    key={r.id}
+                    className={`group relative overflow-hidden rounded-xl bg-gradient-to-br from-white to-slate-50 border border-slate-200 hover:shadow-md transition ${leftBorderByStatus(r.status)}`}
+                  >
+                    <div className="p-4 sm:p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-slate-900 text-sm sm:text-base truncate">
+                              {r.reportType}
+                            </h3>
+                            <span
+                              className={`text-[11px] sm:text-xs font-medium px-2.5 py-1 rounded ${r.status === 'Pending'
+                                ? 'bg-amber-100 text-amber-700'
+                                : r.status === 'Approved'
+                                ? 'bg-emerald-100 text-emerald-700'
+                                : 'bg-rose-100 text-rose-700'
+                              }`}
+                            >
+                              {r.status}
+                            </span>
+                          </div>
+                          <p className="text-xs sm:text-sm text-slate-600">{r.projectName}</p>
+                        </div>
+
+                        <button
+                          onClick={() => router.push(`/manager/reports/${r.id}`)}
+                          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium
+                                     text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50"
+                        >
+                          View
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <p className="text-sm text-slate-700 mt-2 mb-3">{r.description}</p>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+                        <div className="flex items-center gap-5 text-xs sm:text-sm text-slate-600">
+                          <span>{r.submittedBy}</span>
+                          <span>{r.submittedDate}</span>
+                        </div>
+
+                        {r.status === 'Pending' && (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleReject(r.id)}
+                              className="px-3 sm:px-4 py-2 rounded-lg text-white text-xs sm:text-sm font-medium bg-rose-600 hover:bg-rose-700"
+                            >
+                              Reject
+                            </button>
+                            <button
+                              onClick={() => handleApprove(r.id)}
+                              className="px-3 sm:px-4 py-2 rounded-lg text-white text-xs sm:text-sm font-medium bg-emerald-600 hover:bg-emerald-700"
+                            >
+                              Approve
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <h1 className="text-xl font-bold text-white">Daily Reports</h1>
-            </div>
-
-            <nav className="flex items-center gap-6">
-              <a href="/manager/dashboard" className="text-slate-400 hover:text-white transition-colors">Dashboard</a>
-              <a href="/manager/projects" className="text-slate-400 hover:text-white transition-colors">Projects</a>
-              <a href="/manager/reports" className="text-white font-medium">Reports</a>
-              <a href="/manager/resources" className="text-slate-400 hover:text-white transition-colors">Resources</a>
-              
-              <button className="p-2 hover:bg-slate-700 rounded-lg transition-colors">
-                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-              </button>
-
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
-                  JD
-                </div>
-              </div>
-            </nav>
+            )}
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Daily Reports</h1>
-          <p className="text-slate-400">Review and manage submitted daily reports</p>
-        </div>
-
-        {/* Filters and Search */}
-        <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Search */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                Search Reports
-              </label>
-              <input
-                type="text"
-                placeholder="Search by report ID, project, or supervisor..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Status Filter */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                Filter by Status
-              </label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="all">All Reports</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-700/50">
-            <div>
-              <p className="text-slate-500 text-xs mb-1">Total Reports</p>
-              <p className="text-white text-2xl font-bold">{reports.length}</p>
-            </div>
-            <div>
-              <p className="text-slate-500 text-xs mb-1">Pending Review</p>
-              <p className="text-orange-400 text-2xl font-bold">
-                {reports.filter(r => r.status === 'pending').length}
-              </p>
-            </div>
-            <div>
-              <p className="text-slate-500 text-xs mb-1">Completed</p>
-              <p className="text-green-400 text-2xl font-bold">
-                {reports.filter(r => r.status === 'completed').length}
-              </p>
-            </div>
-            <div>
-              <p className="text-slate-500 text-xs mb-1">Critical Issues</p>
-              <p className="text-red-400 text-2xl font-bold">
-                {reports.reduce((sum, r) => sum + (r.criticalIssues || 0), 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Reports List */}
-        <ReportsList reports={filteredReports} onReportClick={handleReportClick} />
-      </main>
-    </div>
+      )}
+    </HeaderWithSidebar>
   );
 }
