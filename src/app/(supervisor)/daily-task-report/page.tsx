@@ -2,6 +2,22 @@
 
 import React, { useState, useCallback, ChangeEvent, FormEvent } from 'react';
 
+// Custom styles for number input placeholders
+const customStyles = `
+  input[type="number"]::placeholder {
+    color: #9CA3AF !important;
+    opacity: 1 !important;
+  }
+  input[type="number"]::-webkit-input-placeholder {
+    color: #9CA3AF !important;
+    opacity: 1 !important;
+  }
+  input[type="number"]::-moz-placeholder {
+    color: #9CA3AF !important;
+    opacity: 1 !important;
+  }
+`;
+
 // --- Icon Components (Simulating Lucide Icons using Inline SVG for Single-File Constraint) ---
 const Icon = ({ children, className = 'w-5 h-5' }: { children: React.ReactNode, className?: string }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -56,6 +72,15 @@ const UserCheck = (props: { className?: string }) => (
     </Icon>
 );
 
+const Users = (props: { className?: string }) => (
+    <Icon className={props.className}>
+        <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M9 21v-2a4 4 0 0 1 3-3.87" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+    </Icon>
+);
+
 const CloudUpload = (props: { className?: string }) => (
     <Icon className={props.className}>
         <path d="M4 14.8V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4.2" />
@@ -63,6 +88,11 @@ const CloudUpload = (props: { className?: string }) => (
         <path d="M12 17V6" />
     </Icon>
 );
+
+interface TradeResource {
+    hours: number | '';
+    count: number | '';
+}
 
 // --- Type Definitions ---
 
@@ -78,6 +108,14 @@ type ReportData = {
     issueDescription: string;
     photoBeforeCount: number;
     photoAfterCount: number;
+    estimatedHours: number | '';
+    personnelCount: number | '';
+    trades: {
+        welders: TradeResource;
+        fitters: TradeResource;
+        painters: TradeResource;
+        riggers: TradeResource;
+    };
 };
 
 // --- Initial State ---
@@ -93,6 +131,14 @@ const initialReportData: ReportData = {
     issueDescription: '',
     photoBeforeCount: 0,
     photoAfterCount: 0,
+    estimatedHours: '',
+    personnelCount: '',
+    trades: {
+        welders: { hours: '', count: '' },
+        fitters: { hours: '', count: '' },
+        painters: { hours: '', count: '' },
+        riggers: { hours: '', count: '' },
+    },
 };
 
 // --- Component ---
@@ -104,6 +150,28 @@ export default function DailyTaskReport() {
     // Dynamic state update for text inputs and selections
     const handleChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
+        
+        // Handle nested properties (e.g., trades.welders.hours)
+        if (name.includes('.')) {
+            const parts = name.split('.');
+            if (parts[0] === 'trades' && parts.length === 3) {
+                const tradeKey = parts[1] as keyof ReportData['trades'];
+                const field = parts[2] as keyof TradeResource;
+                setReport(prev => ({
+                    ...prev,
+                    trades: {
+                        ...prev.trades,
+                        [tradeKey]: {
+                            ...prev.trades[tradeKey],
+                            [field]: value === '' ? '' : Number(value)
+                        }
+                    }
+                }));
+                return;
+            }
+        }
+        
+        // Handle regular fields
         setReport(prev => ({ ...prev, [name]: value }));
     }, []);
 
@@ -130,7 +198,7 @@ export default function DailyTaskReport() {
     const primaryDark = 'bg-[#104E8B]';
     const primaryText = 'text-[#104E8B]';
     const accent500 = 'bg-[#FBBF24]';
-    const accentBorder = 'focus:border-[#FBBF24] focus:ring-[#FBBF24]';
+    const accentBorder = 'focus:border-blue-900 focus:ring-blue-900 focus:border-2';
 
     // Photo Capture Component
     const FileUploadBox = ({ label, id, field }: { label: string, id: string, field: 'photoBeforeCount' | 'photoAfterCount' }) => {
@@ -166,6 +234,48 @@ export default function DailyTaskReport() {
         );
     };
 
+    // Trade rows rendering
+    const trades = [
+        { key: 'welders', label: 'Welders' },
+        { key: 'fitters', label: 'Fitters' },
+        { key: 'painters', label: 'Painters' },
+        { key: 'riggers', label: 'Riggers' },
+    ];
+
+    const renderTradeRows = trades.map((trade) => (
+        <div key={trade.key} className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4 border-b border-gray-200 last:border-b-0">
+            <div className="font-medium text-gray-800 flex items-center">
+                {trade.label}
+            </div>
+            <div>
+                <label htmlFor={`${trade.key}-hours`} className="block md:hidden text-xs text-gray-600 mb-1">Hours</label>
+                <input
+                    type="number"
+                    id={`${trade.key}-hours`}
+                    name={`trades.${trade.key}.hours`}
+                    min="0"
+                    value={report.trades[trade.key as keyof typeof report.trades].hours}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2"
+                    placeholder="e.g., 8"
+                />
+            </div>
+            <div>
+                <label htmlFor={`${trade.key}-count`} className="block md:hidden text-xs text-gray-600 mb-1">Count</label>
+                <input
+                    type="number"
+                    id={`${trade.key}-count`}
+                    name={`trades.${trade.key}.count`}
+                    min="0"
+                    value={report.trades[trade.key as keyof typeof report.trades].count}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-900 focus:border-blue-900 shadow-sm focus:outline-none focus:border-2"
+                    placeholder="e.g., 2"
+                />
+            </div>
+        </div>
+    ));
+
     // Radio Button Component
     const IssueRadio = ({ id, value, color, label }: { id: string, value: ReportData['issueSeverity'], color: string, label: string }) => (
         <div className="flex items-center">
@@ -184,6 +294,9 @@ export default function DailyTaskReport() {
 
     return (
         <div className="bg-gray-100 min-h-screen font-sans">
+            {/* Custom styles for number input placeholders */}
+            <style dangerouslySetInnerHTML={{ __html: customStyles }} />
+            
             {/* Success Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
@@ -231,7 +344,7 @@ export default function DailyTaskReport() {
                                 <input
                                     type="text" id="task" name="task" required
                                     value={report.task} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400`}
+                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none `}
                                     placeholder="e.g., Hull cleaning and inspection"
                                 />
                             </label>
@@ -242,7 +355,7 @@ export default function DailyTaskReport() {
                                 <input
                                     type="text" id="assignedBy" name="assignedBy" required
                                     value={report.assignedBy} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400`}
+                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none`}
                                     placeholder="e.g., Mr. Silva (Operations Manager)"
                                 />
                             </label>
@@ -253,7 +366,7 @@ export default function DailyTaskReport() {
                                 <input
                                     type="date" id="date" name="date" required
                                     value={report.date} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-black`}
+                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-black focus:outline-none`}
                                     placeholder="Select date"
                                 />
                             </label>
@@ -264,7 +377,7 @@ export default function DailyTaskReport() {
                                 <input
                                     type="text" id="vessel" name="vessel" required
                                     value={report.vessel} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400`}
+                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none`}
                                     placeholder="e.g., MV 'Sea Serpent'"
                                 />
                             </label>
@@ -275,7 +388,7 @@ export default function DailyTaskReport() {
                                 <input
                                     type="text" id="dockLocation" name="dockLocation" required
                                     value={report.dockLocation} onChange={handleChange}
-                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400`}
+                                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none`}
                                     placeholder="e.g., Dry Dock 3, West Side"
                                 />
                             </label>
@@ -286,7 +399,7 @@ export default function DailyTaskReport() {
                                 <select
                                     id="taskStatus" name="taskStatus" required
                                     value={report.taskStatus} onChange={handleChange}
-                                    className={`w-full px-4  py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm text-gray-400`}
+                                    className={`w-full px-4  py-2 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm text-gray-400 focus:outline-none`}
                                 >
                                     <option value="" disabled className="text-gray-400">Select current status</option>
                                     <option value="in-progress">In Progress</option>
@@ -298,11 +411,52 @@ export default function DailyTaskReport() {
                         </div>
                     </div>
 
-                    {/* SECTION 2: TASK PHOTO UPDATING */}
-                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-gray-400">
+                    {/* SECTION 2: RESOURCE ALLOCATION & MAN-HOURS */}
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
+                        <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
+                            <Users className="w-6 h-6 text-[#104E8B]" />
+                            <span>2. Resource Allocation & Man-Hours</span>
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            {/* Total Estimated Man-Hours */}
+                            <div>
+                                <label htmlFor="estimatedHours" className="block text-sm font-medium text-gray-700 mb-1">Total Estimated Man-Hours</label>
+                                <input type="number" id="estimatedHours" name="estimatedHours" required min="0" value={report.estimatedHours} onChange={handleChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:outline-none focus:ring-blue-900 focus:border-blue-900 transition duration-150 shadow-sm placeholder:text-gray-400 focus:border-2" placeholder="e.g., 48 " />
+                            </div>
+                            {/* Total Personnel Assigned */}
+                            <div>
+                                <label htmlFor="personnelCount" className="block text-sm font-medium text-gray-700 mb-1">Total Personnel Assigned</label>
+                                <input type="number" id="personnelCount" name="personnelCount" required min="0" value={report.personnelCount} onChange={handleChange}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-900 focus:border-blue-900 transition duration-150 shadow-sm placeholder:text-gray-400 focus:border-2" placeholder="e.g., 6" />
+                            </div>
+                        </div>
+
+                        {/* Detailed Resource Table */}
+                        <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Allocated Trades (Daily)</h3>
+                        <p className="text-sm text-gray-600 mb-4">Specify the hours and headcount for key trades contributing to the task.</p>
+                        
+                        <div className="space-y-4">
+                            {/* Column Headers for Desktop View */}
+                            <div className="hidden md:grid grid-cols-3 gap-4 font-bold text-xs uppercase text-gray-500 pb-1 border-b">
+                                <span className="col-span-1">Trade/Resource</span>
+                                <span className="col-span-1">Hours Allocated</span>
+                                <span className="col-span-1">Personnel Count</span>
+                            </div>
+
+                            {/* Rendered Trade Rows */}
+                            {renderTradeRows}
+                        </div>
+                    </div>
+
+                    
+
+                    {/* SECTION 3: TASK PHOTO UPDATING */}
+                    <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900">
                         <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
                             <Camera className="w-6 h-6" />
-                            <span>2. Photo Documentation</span>
+                            <span>3. Photo Documentation</span>
                         </h2>
                         <p className="text-sm text-gray-600 mb-4">Upload high-resolution images showing the workspace *before* and *after* the task.</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -323,11 +477,11 @@ export default function DailyTaskReport() {
                         </div>
                     </div>
 
-                    {/* SECTION 3: ISSUE REPORTING */}
-                    <div className={`bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 ${accent500.replace('bg-', 'border-')}`}>
+                    {/* SECTION 4: ISSUE REPORTING */}
+                    <div className={`bg-white p-6 md:p-8 rounded-xl shadow-lg border-t-4 border-blue-900 ${accent500.replace('bg-', 'border-')}`}>
                         <h2 className="text-xl font-bold text-blue-900 mb-6 flex items-center space-x-2">
                             <AlertTriangle className="w-6 h-6 text-blue-900" />
-                            <span>3. Issue Reporting</span>
+                            <span>4. Issue Reporting</span>
                         </h2>
 
                         {/* Issue Severity (Radio Buttons) */}
@@ -360,11 +514,11 @@ export default function DailyTaskReport() {
 
                         {/* Description Field */}
                         <label className="block">
-                            <span className="block text-sm font-medium text-gray-700 mb-1">Issue Description / Supervisor Notes</span>
+                            <span className="block text-sm font-medium text-gray-700 mb-1 ">Issue Description / Supervisor Notes</span>
                             <textarea
                                 id="issueDescription" name="issueDescription" rows={4}
                                 value={report.issueDescription} onChange={handleChange}
-                                className={`w-full px-4 py-3 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400`}
+                                className={`w-full px-4 py-3 border border-gray-300 rounded-lg ${accentBorder} transition duration-150 shadow-sm placeholder:text-gray-400 focus:outline-none `}
                                 placeholder="Provide detailed notes on the issue, required actions, or any special observations."
                             ></textarea>
                         </label>
