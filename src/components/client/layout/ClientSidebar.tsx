@@ -173,7 +173,7 @@ export default function ClientSidebar({ isOpen, onClose }: SidebarProps) {
               R
             </div>
             <div className="ml-3">
-              <p className="font-semibold text-gray-800">Rajesh Kumar</p>
+              <p className="font-semibold text-gray-800">Dilusha Olaboduwa</p>
               <p className="text-sm text-gray-500">Ocean Shipping Ltd.</p>
             </div>
           </div>

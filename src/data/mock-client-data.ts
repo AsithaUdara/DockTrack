@@ -276,11 +276,11 @@ export const mockRecentActivities: RecentActivity[] = [
 
 export const mockClientProfile: ClientProfile = {
   id: 'client-001',
-  name: 'Rajesh Kumar',
-  email: 'rajesh.kumar@oceanshipping.com',
+  name: 'Dilusha Olaboduwa',
+  email: 'dilusha.olaboduwa@oceanshipping.com',
   phone: '+94 77 123 4567',
   companyName: 'Ocean Shipping Lines Ltd.',
-  address: '123 Marine Drive, Colombo 03, Sri Lanka',
+  address: '123 Marine Drive, Piliyandala, Colombo, Sri Lanka',
   notificationPreferences: {
     emailReports: true,
     smsAlerts: true,
