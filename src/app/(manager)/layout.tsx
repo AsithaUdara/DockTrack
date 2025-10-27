@@ -2,7 +2,7 @@
 'use client';
 import { useState } from 'react';
 import Header from '@/components/shared/layout/Header';
-import Sidebar from '@/components/shared/layout/Sidebar';
+import ManagerSidebar from '@/components/shared/layout/ManagerSidebar';
 
 export default function ManagerLayout({
   children,
@@ -12,15 +12,23 @@ export default function ManagerLayout({
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
-      {/* The Sidebar component is responsible for its own visibility and the overlay */}
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className="min-h-screen bg-slate-50">
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-      <div className="flex flex-col flex-1 min-w-0">
-        {/* The Header gets the function to open the sidebar on mobile */}
+      {/* Sidebar */}
+      <ManagerSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+      {/* Main content area with left margin to account for sidebar on desktop */}
+      <div className="md:ml-72">
         <Header onMenuClick={() => setSidebarOpen(true)} />
         
-        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
+        <main className="px-4 sm:px-6 lg:px-8 py-6">
           {children}
         </main>
       </div>
