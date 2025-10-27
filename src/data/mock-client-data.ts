@@ -98,7 +98,7 @@ export const mockDailyReports: DailyReportSummary[] = [
       'Install new propeller bolts',
       'Quality control inspection at 2 PM'
     ],
-    photoCount: 8,
+    photoCount: 4,
     photos: ['/dockyard-bg.jpg'],
     supervisorName: 'Asanka Fernando',
     overallProgress: 68
@@ -124,7 +124,7 @@ export const mockDailyReports: DailyReportSummary[] = [
       'Start primer application',
       'Propeller alignment work'
     ],
-    photoCount: 6,
+    photoCount: 4,
     photos: ['/dockyard-bg.jpg'],
     supervisorName: 'Asanka Fernando',
     overallProgress: 65
@@ -150,7 +150,7 @@ export const mockDailyReports: DailyReportSummary[] = [
       'Rudder inspection',
       'Start welding port side'
     ],
-    photoCount: 7,
+    photoCount: 6,
     photos: ['/dockyard-bg.jpg'],
     supervisorName: 'Asanka Fernando',
     overallProgress: 62
