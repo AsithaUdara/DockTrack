@@ -14,9 +14,56 @@ interface Notification {
   link: string;
 }
 
+// Small placeholder popup components (declare outside to avoid recreating during render)
+const ApprovalNotificationReject = () => (
+  <div className="bg-white p-6 rounded shadow-lg w-96">
+    <h3 className="text-lg font-bold text-gray-800">Approval - Reject</h3>
+    <p className="text-sm text-gray-600 mt-2">Reject the selected notification/approval request.</p>
+  </div>
+);
+
+const ApprovalNotificationSuccess = () => (
+  <div className="bg-white p-6 rounded shadow-lg w-96">
+    <h3 className="text-lg font-bold text-gray-800">Approval - Success</h3>
+    <p className="text-sm text-gray-600 mt-2">The approval completed successfully.</p>
+  </div>
+);
+
 export default function Header({ onMenuClick }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
+
+  // Modal & notification panel state/ref
+  const [showAll, setShowAll] = useState(false);
+
+  // Popup states for approval flows
+  const [showApprovalPopup, setShowApprovalPopup] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+  // Sample notifications (can be replaced with real data)
+  const notifications: Notification[] = [
+    { id: 1, title: 'New report added', description: 'A new daily report was submitted by Team A', link: '/reports/1' },
+    { id: 2, title: 'Pending photos', description: '3 new photos await approval', link: '/photos/pending' },
+    { id: 3, title: 'System update', description: 'System maintenance scheduled at 02:00 AM', link: '/settings' },
+    { id: 4, title: 'Crew change', description: 'Crew changes updated for Dock B3', link: '/projects' },
+    { id: 5, title: 'Material request', description: 'Material request #123 needs review', link: '/materials/123' },
+    { id: 6, title: 'Safety alert', description: 'Minor safety alert reported', link: '/safety' },
+  ];
+
+  const displayedNotifications = showAll ? notifications : notifications.slice(0, Math.min(5, notifications.length));
+
+  const handleNotificationClick = (link: string) => {
+    // Navigate to link in browser, guard for SSR environment
+    if (typeof window !== 'undefined') {
+      try {
+        window.location.assign(link);
+      } catch (e) {
+        console.warn('Navigation failed', e);
+      }
+    }
+  };
+
+  // (Approval popup components are declared above to avoid recreate-on-render)
 
   // close on outside click
   useEffect(() => {
@@ -65,18 +112,26 @@ export default function Header({ onMenuClick }: HeaderProps) {
             </button>
 
             {/* Dropdown panel */}
-          {showNotifications && (
-  <div
-    className="absolute right-4 top-16 w-72 bg-white border rounded-lg shadow-lg p-4 z-50
-               origin-top animate-[fadeIn_0.15s_ease-out]"
-  >
-    <ul className="space-y-2 text-sm list-disc pl-5">
-      <li className="text-gray-800">New report added</li>
-      <li className="text-gray-800">Pending approval: 3 new photos</li>
-      <li className="text-gray-800">System update scheduled</li>
-    </ul>
-  </div>
-)}
+                  {showNotifications && (
+                    <div
+                      className="absolute right-4 top-16 w-72 bg-white border rounded-lg shadow-lg p-4 z-50
+                       origin-top animate-[fadeIn_0.15s_ease-out]"
+                    >
+                      <ul className="space-y-2 text-sm list-disc pl-5">
+                        <li className="text-gray-800">New report added</li>
+                        <li className="text-gray-800">Pending approval: 3 new photos</li>
+                        <li className="text-gray-800">System update scheduled</li>
+                      </ul>
+                      <div className="mt-3 text-right">
+                        <button
+                          onClick={() => { setShowAll(true); setShowNotifications(false); }}
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          View All
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
 
           </div>
@@ -84,10 +139,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
       </div>
 
       {/* Centered Modal with Blurred Background */}
-      {isOpen && (
+      {showAll && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
           <div
-            ref={modalRef}
             className={`bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300
               flex flex-col
               ${showAll ? 'w-3/4 max-h-[80vh]' : 'w-96 max-h-[60vh]'}`}
