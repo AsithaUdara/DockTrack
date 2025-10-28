@@ -247,7 +247,7 @@ export default function Section1_WorkCompleted() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Section 1: Work Completed</h2>
-          <p className="text-sm text-gray-500 mt-1">Document today's tasks and progress</p>
+          
         </div>
       </div>
 
@@ -308,21 +308,7 @@ export default function Section1_WorkCompleted() {
         </div> */}
 
         {/* Status Message */}
-        {remainingTaskCount > 0 ? (
-          <div className="mt-4 bg-orange-50 border-2 border-orange-200 rounded-xl p-3 flex items-center gap-3">
-            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-            <p className="text-sm text-orange-700 font-medium">
-              {remainingTaskCount} {remainingTaskCount === 1 ? 'task' : 'tasks'} still pending completion
-            </p>
-          </div>
-        ) : completedTaskCount > 0 ? (
-          <div className="mt-4 bg-green-50 border-2 border-green-200 rounded-xl p-3 flex items-center gap-3">
-            <div className="w-2 h-2 bg-green-500 rounded-full" />
-            <p className="text-sm text-green-700 font-medium">
-              🎉 All assigned tasks completed!
-            </p>
-          </div>
-        ) : null}
+        
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
