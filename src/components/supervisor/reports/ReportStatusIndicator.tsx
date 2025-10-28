@@ -24,7 +24,7 @@ export default function ReportStatusIndicator({ status, message }: ReportStatusI
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       )}
       {status === 'success' && (
-        <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-12 h-12 bg-green-600/30 rounded-full text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       )}

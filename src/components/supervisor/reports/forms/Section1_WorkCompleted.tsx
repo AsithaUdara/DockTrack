@@ -1,4 +1,3 @@
-// src/components/supervisor/reports/forms/Section1_WorkCompleted.tsx
 import { useState } from 'react';
 import { DailyTask, mockDailyTasks } from '@/data/mock-daily-activity';
 import { Plus, Image, Camera, X } from 'lucide-react';
@@ -59,13 +58,11 @@ const TaskCard = ({
   index,
   updateTask,
   removeTask,
-  addPhoto,
 }: {
   task: DailyTask;
   index: number;
   updateTask: (index: number, field: keyof DailyTask, value: string | number) => void;
   removeTask: (index: number) => void;
-  addPhoto: (index: number) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customType, setCustomType] = useState(task.type === 'Other' ? '' : task.type);
@@ -167,14 +164,6 @@ const TaskCard = ({
               </div>
             </div>
           </div>
-          
-          <button
-            onClick={() => addPhoto(index)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg transition-colors duration-200"
-          >
-            <Plus className="w-5 h-5" />
-            Add Photo
-          </button>
         </div>
       </div>
 
@@ -231,6 +220,7 @@ const TaskCard = ({
 
 export default function Section1_WorkCompleted() {
   const [tasks, setTasks] = useState<DailyTask[]>(mockDailyTasks);
+  const [assignedTaskCount, setAssignedTaskCount] = useState(7); // Total assigned tasks
 
   const addTask = () => {
     setTasks([...tasks, { type: 'Hull Welding', photoCount: 0 }]);
@@ -246,27 +236,84 @@ export default function Section1_WorkCompleted() {
     setTasks(tasks.filter((_, i) => i !== index));
   };
 
-  const addPhoto = (index: number) => {
-    const updatedTasks = [...tasks];
-    updatedTasks[index] = {
-      ...updatedTasks[index],
-      photoCount: updatedTasks[index].photoCount + 1,
-    };
-    setTasks(updatedTasks);
-  };
+  const completedTaskCount = tasks.length;
+  const remainingTaskCount = Math.max(0, assignedTaskCount - completedTaskCount);
+  const progressPercentage = assignedTaskCount > 0 
+    ? (completedTaskCount / assignedTaskCount) * 100 
+    : 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Section 1: Work Completed</h2>
-          <p className="text-sm text-gray-500 mt-1">Document today's tasks and progress</p>
+          
         </div>
+      </div>
+
+      {/* Progress Summary Section */}
+      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl p-6 border-2 border-indigo-100 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-bold text-gray-800">Task Progress Overview</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              {completedTaskCount} of {assignedTaskCount} assigned tasks completed
+            </p>
+          </div>
+          <div className="text-right">
+            <input
+              type="number"
+              min="0"
+              value={assignedTaskCount}
+              onChange={(e) => setAssignedTaskCount(Math.max(0, parseInt(e.target.value) || 0))}
+              className="w-20 px-3 py-2 border-2 border-gray-300 rounded-lg text-center font-bold text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+            />
+            <p className="text-xs text-gray-500 mt-1">Assigned Tasks</p>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="relative">
+          <div className="w-full h-8 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+            <div
+              className="h-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 transition-all duration-500 ease-out flex items-center justify-end px-3 relative"
+              style={{ width: `${Math.min(progressPercentage, 100)}%` }}
+            >
+              {progressPercentage > 0 && (
+                <span className="text-white font-bold text-sm drop-shadow-md">
+                  {Math.round(progressPercentage)}%
+                </span>
+              )}
+              {progressPercentage > 0 && (
+                <div className="absolute inset-0 bg-white/20 animate-pulse" />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        {/* <div className="grid grid-cols-3 gap-4 mt-6">
+          <div className="bg-white rounded-xl p-4 text-center border-2 border-green-100 shadow-sm">
+            <div className="text-3xl font-bold text-green-600">{completedTaskCount}</div>
+            <div className="text-xs text-gray-600 mt-1 font-semibold uppercase tracking-wide">Completed</div>
+          </div>
+          <div className="bg-white rounded-xl p-4 text-center border-2 border-orange-100 shadow-sm">
+            <div className="text-3xl font-bold text-orange-600">{remainingTaskCount}</div>
+            <div className="text-xs text-gray-600 mt-1 font-semibold uppercase tracking-wide">Remaining</div>
+          </div>
+          <div className="bg-white rounded-xl p-4 text-center border-2 border-indigo-100 shadow-sm">
+            <div className="text-3xl font-bold text-indigo-600">{assignedTaskCount}</div>
+            <div className="text-xs text-gray-600 mt-1 font-semibold uppercase tracking-wide">Total Assigned</div>
+          </div>
+        </div> */}
+
+        {/* Status Message */}
+        
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {tasks.length === 0 ? (
-          <div className="col-span-full flex flex-col items-center justify-center py-12 px-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
+          <div className="col-span-full flex flex-col items-center justify-center py-12 px-4 bg-white rounded-2xl border-2 border-dashed border-gray-300">
             <Camera className="w-16 h-16 text-gray-400 mb-4" />
             <p className="text-gray-600 font-medium mb-2">No tasks added yet</p>
             <p className="text-gray-400 text-sm">Click the button below to add your first task</p>
@@ -279,19 +326,12 @@ export default function Section1_WorkCompleted() {
               index={index}
               updateTask={updateTask}
               removeTask={removeTask}
-              addPhoto={addPhoto}
             />
           ))
         )}
       </div>
       
-      <button
-        onClick={addTask}
-        className="font-semibold text-blue-600 hover:text-blue-800 text-sm mt-4"
-      >
-        +
-        Add Another Task
-      </button>
+      
     </div>
   );
 }
