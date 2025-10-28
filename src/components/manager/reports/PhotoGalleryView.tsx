@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { Photo } from '@/types/report.types';
 import Image from 'next/image';
+import Header from '../../shared/layout/Header';
 
 interface Props {
   photos: Photo[];
@@ -19,7 +20,8 @@ export default function PhotoGalleryView({ photos }: Props) {
     : photos.filter(p => p.workType === filter);
 
   return (
-    <div className="space-y-6">
+    <Header title="Photo Gallery" active="Reports">
+      <div className="space-y-6">
       {/* Filters */}
       <div className="flex items-center gap-4 flex-wrap">
         <span className="text-sm font-medium text-gray-700">Filter by:</span>
@@ -80,7 +82,8 @@ export default function PhotoGalleryView({ photos }: Props) {
           }}
         />
       )}
-    </div>
+      </div>
+    </Header>
   );
 }
 

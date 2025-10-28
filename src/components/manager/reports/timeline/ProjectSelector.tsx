@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from '../../../shared/layout/Header';
 import { Project } from '@/types/project.types';
 
 interface ProjectSelectorProps {
@@ -26,7 +27,8 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
   onProjectSelect
 }) => {
   return (
-    <div className="flex gap-3 overflow-x-auto pb-2">
+    <Header title="Timeline Visualization" active="Projects">
+      <div className="flex gap-3 overflow-x-auto pb-2">
       {projects.map((project) => (
         <button
           key={project.id}
@@ -51,6 +53,7 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
           </div>
         </button>
       ))}
-    </div>
+      </div>
+    </Header>
   );
 };

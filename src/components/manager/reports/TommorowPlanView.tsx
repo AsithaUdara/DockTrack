@@ -2,6 +2,7 @@
 'use client';
 
 import { TomorrowPlan } from '@/types/report.types';
+import Header from '../../shared/layout/Header';
 
 interface Props {
   plan: TomorrowPlan;
@@ -9,7 +10,8 @@ interface Props {
 
 export default function TomorrowPlanView({ plan }: Props) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <Header title="Tomorrow's Plan" active="Reports">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
         📅 Tomorrow's Plan ({plan.date})
       </h2>
@@ -139,6 +141,7 @@ export default function TomorrowPlanView({ plan }: Props) {
           </div>
         </section>
       </div>
-    </div>
+      </div>
+    </Header>
   );
 }

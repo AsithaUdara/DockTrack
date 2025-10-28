@@ -1,4 +1,5 @@
 import React from 'react';
+import Header from '../../../shared/layout/Header';
 import { Project } from '@/types/project.types';
 
 interface GanttChartProps {
@@ -21,7 +22,8 @@ const getMilestoneStatusColor = (status: string): string => {
 
 export const GanttChart: React.FC<GanttChartProps> = ({ project, showMilestones }) => {
   return (
-    <div className="overflow-x-auto">
+    <Header title="Timeline Visualization" active="Reports">
+      <div className="overflow-x-auto">
       {/* Timeline Header */}
       <div className="flex mb-4 min-w-max">
         <div className="w-64 flex-shrink-0"></div>
@@ -132,5 +134,6 @@ export const GanttChart: React.FC<GanttChartProps> = ({ project, showMilestones 
         </div>
       )}
     </div>
+    </Header>
   );
 };

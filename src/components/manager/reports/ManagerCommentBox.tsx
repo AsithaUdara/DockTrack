@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ManagerComment } from '@/types/report.types';
+import Header from '../../shared/layout/Header';
 
 interface Props {
   reportId: string;
@@ -31,7 +32,8 @@ export default function ManagerCommentBox({ reportId, existingComments = [] }: P
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <Header title="Manager Comments" active="Reports">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
           💬 Manager Comments
@@ -173,6 +175,7 @@ export default function ManagerCommentBox({ reportId, existingComments = [] }: P
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </Header>
   );
 }

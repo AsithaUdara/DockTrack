@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Issue } from '@/types/report.types';
 import ManagerCommentBox from './ManagerCommentBox';
+import Header from '../../shared/layout/Header';
 
 interface Props {
   issues: Issue[];
@@ -14,16 +15,19 @@ export default function IssuesView({ issues, reportId }: Props) {
 
   if (issues.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">✅</div>
-        <h3 className="text-lg font-semibold text-gray-900">No Issues Reported</h3>
-        <p className="text-gray-600 mt-2">Everything proceeded smoothly today.</p>
-      </div>
+      <Header title="Issues" active="Reports">
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">✅</div>
+          <h3 className="text-lg font-semibold text-gray-900">No Issues Reported</h3>
+          <p className="text-gray-600 mt-2">Everything proceeded smoothly today.</p>
+        </div>
+      </Header>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <Header title="Issues" active="Reports">
+      <div className="space-y-4">
       {issues.map((issue, index) => (
         <div
           key={index}
@@ -122,7 +126,8 @@ export default function IssuesView({ issues, reportId }: Props) {
           }}
         />
       )}
-    </div>
+      </div>
+    </Header>
   );
 }
 

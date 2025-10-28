@@ -7,6 +7,7 @@ import IssuesView from './IssuesView';
 import TomorrowPlanView from './TommorowPlanView';
 import ManagerCommentBox from './ManagerCommentBox';
 import ApprovalPanel from './ApprovalPanel';
+import Header from '../../shared/layout/Header';
 
 interface Props {
   report: DetailedReport;
@@ -24,111 +25,113 @@ export default function ReportDetailView({ report }: Props) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              {report.projectName}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Supervisor: {report.supervisorName} | Submitted: {report.submittedAt}
-            </p>
+    <Header title={report.projectName} active="Reports">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {report.projectName}
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Supervisor: {report.supervisorName} | Submitted: {report.submittedAt}
+              </p>
+            </div>
+            
+            {/* Status Badge */}
+            <div className={`px-4 py-2 rounded-full text-sm font-semibold ${
+              String(report.status) === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+              String(report.status) === 'approved' ? 'bg-green-100 text-green-800' :
+              'bg-red-100 text-red-800'
+            }`}>
+              {String(report.status).toUpperCase()}
+            </div>
           </div>
-          
-          {/* Status Badge */}
-          <div className={`px-4 py-2 rounded-full text-sm font-semibold ${
-            String(report.status) === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-            String(report.status) === 'approved' ? 'bg-green-100 text-green-800' :
-            'bg-red-100 text-red-800'
-          }`}>
-            {String(report.status).toUpperCase()}
+
+          {/* Executive Summary */}
+          <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+            <h3 className="font-semibold text-blue-900 mb-2">📋 Quick Overview</h3>
+            <div className="grid grid-cols-4 gap-4 text-sm">
+              <div>
+                <span className="text-blue-700 font-medium">Progress:</span>
+                <span className="ml-2 text-blue-900">{report.overallProgress}%</span>
+              </div>
+              <div>
+                <span className="text-blue-700 font-medium">Workers:</span>
+                <span className="ml-2 text-blue-900">{report.totalWorkers}</span>
+              </div>
+              <div>
+                <span className="text-blue-700 font-medium">Man-Hours:</span>
+                <span className="ml-2 text-blue-900">{report.totalManHours}h</span>
+              </div>
+              <div>
+                <span className="text-blue-700 font-medium">Issues:</span>
+                <span className="ml-2 text-blue-900">{report.issues.length}</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Executive Summary */}
-        <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-          <h3 className="font-semibold text-blue-900 mb-2">📋 Quick Overview</h3>
-          <div className="grid grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-blue-700 font-medium">Progress:</span>
-              <span className="ml-2 text-blue-900">{report.overallProgress}%</span>
-            </div>
-            <div>
-              <span className="text-blue-700 font-medium">Workers:</span>
-              <span className="ml-2 text-blue-900">{report.totalWorkers}</span>
-            </div>
-            <div>
-              <span className="text-blue-700 font-medium">Man-Hours:</span>
-              <span className="ml-2 text-blue-900">{report.totalManHours}h</span>
-            </div>
-            <div>
-              <span className="text-blue-700 font-medium">Issues:</span>
-              <span className="ml-2 text-blue-900">{report.issues.length}</span>
-            </div>
+        {/* Tabs Navigation */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+          <div className="flex border-b border-gray-200">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex-1 px-6 py-4 text-sm font-medium transition-colors relative ${
+                  activeTab === tab.id
+                    ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+              >
+                <span className="mr-2">{tab.icon}</span>
+                {tab.label}
+                {tab.count !== undefined && (
+                  <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
+                    activeTab === tab.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+                  }`}>
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            {activeTab === 'details' && (
+              <DetailsTab report={report} />
+            )}
+            {activeTab === 'photos' && (
+              <PhotoGalleryView photos={report.photos} />
+            )}
+            {activeTab === 'issues' && (
+              <IssuesView issues={report.issues} reportId={report.id} />
+            )}
+            {activeTab === 'timeline' && (
+              <TimelineTab report={report} />
+            )}
           </div>
         </div>
+
+        {/* Tomorrow's Plan Section */}
+        <TomorrowPlanView plan={report.tomorrowPlan} />
+
+        {/* Manager Comments Section */}
+        <ManagerCommentBox reportId={report.id} existingComments={report.managerComments} />
+
+        {/* Approval Panel */}
+        {String(report.status) === 'pending' && (
+          <ApprovalPanel
+            reportId={report.id}
+            onApprove={() => {/* Handle approval */}}
+            onReject={() => {/* Handle rejection */}}
+          />
+        )}
       </div>
-
-      {/* Tabs Navigation */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-        <div className="flex border-b border-gray-200">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex-1 px-6 py-4 text-sm font-medium transition-colors relative ${
-                activeTab === tab.id
-                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }`}
-            >
-              <span className="mr-2">{tab.icon}</span>
-              {tab.label}
-              {tab.count !== undefined && (
-                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                  activeTab === tab.id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
-                }`}>
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        <div className="p-6">
-          {activeTab === 'details' && (
-            <DetailsTab report={report} />
-          )}
-          {activeTab === 'photos' && (
-            <PhotoGalleryView photos={report.photos} />
-          )}
-          {activeTab === 'issues' && (
-            <IssuesView issues={report.issues} reportId={report.id} />
-          )}
-          {activeTab === 'timeline' && (
-            <TimelineTab report={report} />
-          )}
-        </div>
-      </div>
-
-      {/* Tomorrow's Plan Section */}
-      <TomorrowPlanView plan={report.tomorrowPlan} />
-
-      {/* Manager Comments Section */}
-      <ManagerCommentBox reportId={report.id} existingComments={report.managerComments} />
-
-      {/* Approval Panel */}
-      {String(report.status) === 'pending' && (
-        <ApprovalPanel
-          reportId={report.id}
-          onApprove={() => {/* Handle approval */}}
-          onReject={() => {/* Handle rejection */}}
-        />
-      )}
-    </div>
+    </Header>
   );
 }
 
