@@ -35,9 +35,6 @@ export default function Section2_Manpower() {
           </tfoot>
         </table>
       </div>
-      <button className="font-semibold text-blue-600 hover:text-blue-800 text-sm">
-        + Add Another Trade
-      </button>
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import jsPDF from 'jspdf';
 
 import ReportStatusIndicator from '@/components/supervisor/reports/ReportStatusIndicator';
-import ReportSharingOptions from '@/components/supervisor/reports/ReportSharingOptions';
 
 type ReportStatus = 'processing' | 'success' | 'error';
 
@@ -71,7 +70,7 @@ export default function ReportStatusPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 items-center justify-center">
       <div className="max-w-4xl mx-auto px-4">
         <div 
           ref={reportRef}
@@ -84,7 +83,7 @@ export default function ReportStatusPage() {
           />
           
           {status === 'success' && (
-            <div className="mt-8 space-y-4">
+            <div className="mt-8 space-y-4 text-center">
               <h2 className="text-2xl font-bold text-gray-900">
                 Report ID: {reportId}
               </h2>
@@ -92,7 +91,7 @@ export default function ReportStatusPage() {
                 Your daily report has been processed and is now available.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 print:flex-col">
+              <div className="flex flex-col sm:flex-row gap-4 print:flex-col justify-center items-center">
                 <button
                   onClick={handlePrint}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors print:bg-black"
@@ -106,12 +105,6 @@ export default function ReportStatusPage() {
                   Export to PDF
                 </button>
               </div>
-              
-              <ReportSharingOptions
-                reportId={reportId}
-                reportTitle="Daily Report - MV Sea Princess"
-                shareUrl={`https://yourapp.com/reports/${reportId}`}
-              />
             </div>
           )}
         </div>
