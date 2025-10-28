@@ -168,10 +168,10 @@ export default function NewReportPage() {
           ) : (
             <button
               onClick={() => {}}
-              className="w-full sm:w-auto px-5 py-2 bg-green-800 text-white font-semibold rounded-lg hover:bg-green-900"
+              className=""
               disabled
             >
-              Submit Report
+             
             </button>
           )}
         </div>

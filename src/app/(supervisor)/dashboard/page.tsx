@@ -96,6 +96,8 @@ export default function SupervisorDashboard() {
   const [activeProject, setActiveProject] = useState<Project>(mockSupervisorProjects[0]);
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const router = useRouter();
+
   const handleProjectSelect = (project: Project) => {
     setActiveProject(project);
     setModalOpen(false);
