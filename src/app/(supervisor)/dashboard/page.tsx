@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { mockSupervisorReports } from '@/data/mock-reports';
 import { Report, ReportStatus } from '@/types/report.types';
-import { mockSupervisorProjects, Project } from '@/data/mock-projects';
+import { mockSupervisorProjects, SupervisorProject } from '@/data/mock-projects';
 import ProjectSelectorModal from '@/components/supervisor/ProjectSelectorModal';
 
 const StatCard = ({ title, value, icon }: { title: string; value: string; icon: React.ReactElement }) => (
-  <div className="bg-white p-5 rounded-lg border border-gray-200 flex items-center">
-    <div className="flex-shrink-0 bg-gray-100 rounded-full h-12 w-12 flex items-center justify-center">
+    <div className="bg-white p-5 rounded-lg border border-gray-200 flex items-center">
+    <div className="shrink-0 bg-gray-100 rounded-full h-12 w-12 flex items-center justify-center">
       {icon}
     </div>
     <div className="ml-4">
@@ -39,16 +39,16 @@ const ReportListItem = ({ report }: { report: Report }) => {
 };
 
 export default function SupervisorDashboard() {
-  const [activeProject, setActiveProject] = useState<Project>(mockSupervisorProjects[0]);
+  const [activeProject, setActiveProject] = useState<SupervisorProject>(mockSupervisorProjects[0]);
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleProjectSelect = (project: Project) => {
+  const handleProjectSelect = (project: SupervisorProject) => {
     setActiveProject(project);
     setModalOpen(false);
   };
 
-  const pendingReports = mockSupervisorReports.filter(r => r.status === 'Pending');
-  const draftReports = mockSupervisorReports.filter(r => r.status === 'Draft');
+  const pendingReports = mockSupervisorReports.filter((r: Report) => r.status === 'Pending');
+  const draftReports = mockSupervisorReports.filter((r: Report) => r.status === 'Draft');
   
   return (
     <>
@@ -102,7 +102,7 @@ export default function SupervisorDashboard() {
               <div className="mb-4">
                   <h3 className="text-sm font-semibold text-gray-500 mb-2">PENDING ({pendingReports.length})</h3>
                   <div className="border-t border-gray-200 pt-2">
-                    {pendingReports.map(report => <ReportListItem key={report.id} report={report} />)}
+                    {pendingReports.map((report: Report) => <ReportListItem key={report.id} report={report} />)}
                   </div>
               </div>
           )}
@@ -110,7 +110,7 @@ export default function SupervisorDashboard() {
               <div>
                   <h3 className="text-sm font-semibold text-gray-500 mb-2">DRAFTS ({draftReports.length})</h3>
                    <div className="border-t border-gray-200 pt-2 space-y-2">
-                    {draftReports.map(report => <ReportListItem key={report.id} report={report} />)}
+                    {draftReports.map((report: Report) => <ReportListItem key={report.id} report={report} />)}
                   </div>
               </div>
           )}

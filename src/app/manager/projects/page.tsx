@@ -12,7 +12,7 @@ export default function AllProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'On Track' | 'At Risk' | 'Delayed'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'On Track' | 'Delayed'>('all');
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -45,8 +45,7 @@ export default function AllProjectsPage() {
     switch (status.toLowerCase()) {
       case 'on track':
         return 'bg-green-100 text-green-700 border-green-200';
-      case 'at risk':
-        return 'bg-amber-100 text-amber-700 border-amber-200';
+      
       case 'delayed':
         return 'bg-rose-100 text-rose-700 border-rose-200';
       default:
@@ -96,7 +95,7 @@ export default function AllProjectsPage() {
       >
         <div className="min-h-[50vh] flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003d82] mx-auto mb-3" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-3" />
             <p className="text-gray-600">Loading projects…</p>
           </div>
         </div>
@@ -115,7 +114,7 @@ export default function AllProjectsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Page header */}
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0a3b76]">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
             All Projects
           </h1>
           <p className="mt-1 text-sm sm:text-base text-slate-600">
@@ -132,17 +131,17 @@ export default function AllProjectsPage() {
                 placeholder="Search by vessel, project type, or manager…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003d82] focus:border-transparent"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               />
             </div>
             <div className="flex flex-wrap gap-2">
-              {(['all', 'On Track', 'At Risk', 'Delayed'] as const).map((tag) => (
+              {(['all', 'On Track',  'Delayed'] as const).map((tag) => (
                 <button
                   key={tag}
                   onClick={() => setStatusFilter(tag)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     statusFilter === tag
-                      ? 'bg-[#003d82] text-white'
+                      ? 'bg-blue-800 text-white'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
@@ -172,7 +171,7 @@ export default function AllProjectsPage() {
                   <div
                     key={project.id}
                     onClick={() => handleProjectClick(project.id)}
-                    className="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-[#003d82] hover:shadow-md transition-all cursor-pointer"
+                    className="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-blue-600 hover:shadow-md transition-all cursor-pointer"
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between mb-3">

@@ -26,8 +26,8 @@ const pendingCountOf = (p: any) =>
 
 /* ---------------- small atoms ---------------- */
 const RowIcon = () => (
-  <div className="h-10 w-10 rounded-xl bg-slate-100 ring-1 ring-slate-200 flex items-center justify-center">
-    <svg className="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+  <div className="h-10 w-10 rounded-xl bg-gray-100 ring-1 ring-gray-200 flex items-center justify-center">
+    <svg className="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l3 3" />
       <circle cx="12" cy="12" r="9" />
     </svg>
@@ -35,12 +35,12 @@ const RowIcon = () => (
 );
 
 const ProgressRight = ({ value }: { value: number }) => (
-  <div className="min-w-[240px] sm:min-w-[280px] md:min-w-[320px] flex items-center gap-3">
+  <div className="min-w-60 sm:min-w-[280px] md:min-w-[320px] flex items-center gap-3">
     <div className="w-full">
-      <div className="h-2 w-full rounded-full bg-slate-200/70 overflow-hidden">
+      <div className="h-2 w-full rounded-full bg-gray-200/70 overflow-hidden">
         {/* subtle glossy fill using same brand blue */}
         <div
-          className="h-2 bg-[#0a3b76] rounded-full transition-[width] duration-500"
+          className="h-2 bg-blue-700 rounded-full transition-[width] duration-500"
           style={{ width: `${value}%` }}
           role="progressbar"
           aria-valuemin={0}
@@ -78,7 +78,7 @@ export default function PendingReports({ projects, onViewReports }: Props) {
           <div
             key={String(p.id ?? title)}
             className="
-              rounded-xl border border-slate-200 bg-white
+              rounded-xl border border-gray-200 bg-white
               px-4 sm:px-5 py-3
               hover:shadow-md transition-shadow
             "
@@ -89,23 +89,23 @@ export default function PendingReports({ projects, onViewReports }: Props) {
                 <RowIcon />
                 <div className="min-w-0">
                   {/* Project Name */}
-                  <div className="text-base font-bold text-slate-900 truncate">
+                  <div className="text-base font-bold text-gray-900 truncate">
                     {title}
                   </div>
 
                   {/* Meta line (removed progress symbol/icon as requested) */}
-                  <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+                  <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600">
                     <div className="flex items-center gap-1.5">
-                      <svg className="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                      <svg className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
-                      <span className="text-slate-500">Manager:</span>
-                      <span className="font-semibold text-slate-800 truncate">{manager}</span>
+                      <span className="text-gray-500">Manager:</span>
+                      <span className="font-semibold text-gray-800 truncate">{manager}</span>
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-slate-500">Progress:</span>
-                      <span className="font-semibold text-slate-800">{progress}%</span>
+                      <span className="text-gray-500">Progress:</span>
+                      <span className="font-semibold text-gray-800">{progress}%</span>
                     </div>
 
                     <PendingChip count={pending} />
@@ -124,7 +124,7 @@ export default function PendingReports({ projects, onViewReports }: Props) {
                 type="button"
                 className="
                   inline-flex items-center gap-1.5 rounded-lg
-                  bg-[#0a3b76] hover:bg-[#082f5d]
+                  bg-blue-800 hover:bg-blue-900
                   px-3.5 py-2 text-sm font-semibold text-white
                   shadow-sm active:scale-[0.98] transition
                 "
@@ -140,9 +140,9 @@ export default function PendingReports({ projects, onViewReports }: Props) {
       })}
 
       {items.length === 0 && (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center">
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 text-center">
           <svg
-            className="mx-auto mb-3 h-10 w-10 text-slate-300"
+            className="mx-auto mb-3 h-10 w-10 text-gray-300"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -150,8 +150,8 @@ export default function PendingReports({ projects, onViewReports }: Props) {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
-          <p className="text-base font-semibold text-slate-700">No pending approvals</p>
-          <p className="text-sm text-slate-500 mt-1">You’re all caught up.</p>
+          <p className="text-base font-semibold text-gray-700">No pending approvals</p>
+          <p className="text-sm text-gray-500 mt-1">You’re all caught up.</p>
         </div>
       )}
     </div>

@@ -16,8 +16,8 @@ export default function ReportsList({ reports, onReportClick }: ReportsListProps
     return (
       <div className="text-center py-16">
         <div className="text-6xl mb-4">📋</div>
-        <h3 className="text-xl font-semibold text-white mb-2">No Reports Found</h3>
-        <p className="text-slate-400">There are no reports matching your criteria</p>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Reports Found</h3>
+        <p className="text-gray-500">There are no reports matching your criteria</p>
       </div>
     );
   }

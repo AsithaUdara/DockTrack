@@ -106,7 +106,7 @@ export default function AlertsPanel({ activities }: AlertsPanelProps) {
       {/* View All Link */}
       {activities.length > 0 && (
         <div className="px-6 py-3 border-t border-gray-200">
-          <button className="w-full text-center text-sm text-[#003d82] hover:text-[#002d5f] font-semibold transition-colors">
+          <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors">
             View all activities
           </button>
         </div>

@@ -1,9 +1,11 @@
 // src/data/mock-reports.ts
-// Mock data for Manager Reports
+// Mock data for Manager and Supervisor Reports
 
-import { Report } from '@/types/project.types';
+import type { Report as ManagerReport } from '@/types/project.types';
+import type { Report as SupervisorReport } from '@/types/report.types';
 
-export const mockReports: Report[] = [
+// Manager-facing reports dataset (detailed shape)
+export const mockReports: ManagerReport[] = [
   {
     id: 'rep-001',
     projectId: 'proj-001',
@@ -246,4 +248,43 @@ export const mockReports: Report[] = [
     priority: 'low',
     description: 'Annual survey completed successfully. All systems meet regulatory standards. Certificate issued.'
   }
+];
+
+// Supervisor-facing reports dataset (simple shape)
+export const mockSupervisorReports: SupervisorReport[] = [
+  {
+    id: 'sr-001',
+    vesselName: 'MV Ocean Voyager',
+    date: '2025-10-24',
+    dayOfProject: 12,
+    status: 'Pending',
+  },
+  {
+    id: 'sr-002',
+    vesselName: 'SS Maritime Express',
+    date: '2025-10-23',
+    dayOfProject: 7,
+    status: 'Draft',
+  },
+  {
+    id: 'sr-003',
+    vesselName: 'Container Ship Alpha',
+    date: '2025-10-22',
+    dayOfProject: 19,
+    status: 'Pending',
+  },
+  {
+    id: 'sr-004',
+    vesselName: 'Cargo Vessel Beta',
+    date: '2025-10-21',
+    dayOfProject: 4,
+    status: 'Draft',
+  },
+  {
+    id: 'sr-005',
+    vesselName: 'MV Atlantic Star',
+    date: '2025-10-20',
+    dayOfProject: 28,
+    status: 'Approved',
+  },
 ];

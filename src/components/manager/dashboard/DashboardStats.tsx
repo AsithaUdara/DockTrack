@@ -12,7 +12,7 @@ const CardShell: React.FC<
     <div
       className="
         group relative overflow-hidden
-        rounded-2xl border border-slate-200 bg-white
+        rounded-2xl border border-gray-200 bg-white
         shadow-sm hover:shadow-lg transition-all
       "
     >
@@ -25,7 +25,7 @@ const CardShell: React.FC<
           <div
             className="
               shrink-0 rounded-xl p-2.5 sm:p-3
-              bg-white/70 ring-1 ring-slate-200
+              bg-white/70 ring-1 ring-gray-200
               shadow-sm
             "
           >
@@ -44,9 +44,9 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
       label: 'Active Projects',
       value: stats.activeProjects,
       accent: 'bg-blue-500',
-      valueClass: 'text-[#0a3b76]',
+      valueClass: 'text-blue-700',
       icon: (
-        <svg className="w-6 h-6 text-[#0a3b76]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-6 h-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h10M4 18h10" />
         </svg>
       ),
@@ -90,7 +90,7 @@ export default function DashboardStats({ stats }: DashboardStatsProps) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-5 sm:mb-7">
       {cards.map((c) => (
         <CardShell key={c.label} accent={c.accent} icon={c.icon}>
-          <p className="text-sm text-slate-500 font-medium">
+          <p className="text-sm text-gray-500 font-medium">
             {c.label}
           </p>
           <div className="mt-1.5 sm:mt-2 flex items-baseline gap-2">

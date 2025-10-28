@@ -1,9 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+// IMPORT EXTERNAL COMPONENTS AND DATA
+// NOTE: Adjust these relative paths if your file structure is different from the standard assumption!
+import NotificationPanel from '../../ui/NotificationPanel'; 
+import { mockNotifications, unreadCount } from '../../../data/mock-notifications'; 
+
+// Corrected NavKey to match the image categories: Dashboard, Projects, Reports, Resources
 type NavKey = 'Dashboard' | 'Projects' | 'Reports' | 'Resources';
 
 export interface HeaderWithSidebarProps {
@@ -30,7 +36,7 @@ function NavItem({
     <Link
       href={href}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
-        ${active ? 'bg-[#003d82] text-white' : 'text-slate-700 hover:bg-slate-100'}`}
+        ${active ? 'bg-blue-800 text-white' : 'text-slate-700 hover:bg-slate-100'}`}
     >
       <span className="shrink-0">{icon}</span>
       <span className="font-medium">{label}</span>
@@ -40,13 +46,15 @@ function NavItem({
 
 /* ---------------- Desktop sidebar ---------------- */
 function DesktopSidebar({
-  userName = 'Manager',
+  userName = 'Manager John Silva',
   userEmail = 'manager@cdl.lk',
   active,
+  onClose,
 }: {
   userName?: string;
   userEmail?: string;
   active?: NavKey;
+  onClose?: () => void;
 }) {
   const initials =
     (userName || '')
@@ -55,27 +63,36 @@ function DesktopSidebar({
       .map((s) => s[0])
       .join('')
       .slice(0, 2)
-      .toUpperCase() || 'M';
+      .toUpperCase() || 'MJ';
 
   return (
-    <aside className="hidden md:flex md:flex-col md:fixed md:left-0 md:top-0 md:bottom-0 md:w-72 bg-white border-r border-slate-200 z-40">
-      {/* Logo */}
-      <div className="h-16 px-6 flex items-center border-b border-slate-200">
+    <aside className="flex flex-col fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-slate-200 z-40">
+      {/* Logo Header */}
+      <div className="px-4 py-3 flex items-center justify-between border-b border-slate-200">
         <div className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-[#003d82] rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">CD</span>
-          </div>
-          <div>
-            <p className="text-sm font-bold text-[#003d82] leading-tight">Colombo Dockyard PLC</p>
-            <p className="text-xs text-gray-500">...an odyssey of Excellence</p>
-          </div>
+          {/* Note: In a real project, replace this with a proper next/image usage path */}
+          <Image
+            src="/cdl-logo.png"
+            alt="Colombo Dockyard PLC"
+            width={180}
+            height={50}
+            className="object-contain"
+          />
         </div>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600 md:hidden shrink-0"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       {/* User */}
       <div className="px-6 py-4 border-b border-slate-200">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[#003d82] text-white flex items-center justify-center font-semibold text-lg">
+          <div className="w-12 h-12 rounded-full bg-blue-800 text-white flex items-center justify-center font-semibold text-lg">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
@@ -132,36 +149,80 @@ function DesktopSidebar({
   );
 }
 
-/* ---------------- Top bar ---------------- */
+/* ---------------- Top bar / Header ---------------- */
 function TopBar({
-  title,
-  userName = 'Manager',
+  onMenuClick,
 }: {
-  title: string;
+  onMenuClick: () => void;
   userName?: string;
 }) {
-  const initials =
-    (userName || '')
-      .split(' ')
-      .filter(Boolean)
-      .map((s) => s[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase() || 'M';
+  // 1. STATE FOR PANEL VISIBILITY
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+  // 2. REF FOR CLICK-OUTSIDE LOGIC
+  const notificationsRef = useRef<HTMLDivElement>(null);
+
+  // 3. EFFECT TO HANDLE CLICK-OUTSIDE
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Close if the click is outside the notification wrapper div
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setIsNotificationsOpen(false);
+      }
+    };
+
+    // Attach the event listener when the panel is open
+    if (isNotificationsOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Clean up the event listener on unmount or when the panel closes
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isNotificationsOpen]);
+
 
   return (
-    <header className="fixed top-0 right-0 left-0 md:left-72 h-16 bg-[#003d82] text-white z-30 shadow-md">
-      <div className="h-full px-6 flex items-center justify-between">
-        <h1 className="text-lg font-semibold truncate">{title}</h1>
-        <div className="flex items-center gap-4">
-          <button className="relative p-2 rounded-lg hover:bg-[#002d5f] transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1" />
+    <header className="bg-white shadow-sm border-b border-gray-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between md:justify-end h-16">
+          {/* Hamburger Menu Button - Mobile only */}
+          <button
+            onClick={onMenuClick}
+            className="md:hidden text-gray-500 hover:text-gray-800"
+            aria-label="Open menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500" />
           </button>
-          <div className="w-9 h-9 rounded-full bg-white text-[#003d82] flex items-center justify-center font-bold text-sm shadow-sm">
-            {initials}
+
+          <div className="flex items-center space-x-4">
+            {/* 4. WRAP BUTTON AND PANEL IN A RELATIVE DIV WITH REF */}
+            <div className="relative" ref={notificationsRef}>
+              {/* Notification Bell */}
+              <button
+                className="relative p-1 text-gray-500 hover:text-gray-800 focus:outline-none"
+                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)} // TOGGLE STATE
+              >
+                {/* Use the dynamically calculated unread count */}
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-semibold text-white">
+                  {unreadCount}
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V5a2 2 0 00-4 0v.083A6 6 0 004 11v3.159c0 .538-.214 1.055-.595 1.436L2 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </button>
+
+              {/* 5. CONDITIONAL RENDERING OF THE PANEL */}
+              {isNotificationsOpen && (
+                <NotificationPanel
+                  notifications={mockNotifications}
+                  onClose={() => setIsNotificationsOpen(false)} // FIX: PASSING THE REQUIRED onClose PROP
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -177,14 +238,32 @@ export default function HeaderWithSidebar({
   userEmail = 'manager@cdl.lk',
   children,
 }: HeaderWithSidebarProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#f5f7fa]">
-      <DesktopSidebar userName={userName} userEmail={userEmail} active={active} />
-      
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-40 ${isSidebarOpen ? 'block' : 'hidden'} md:block`}>
+        <DesktopSidebar
+          userName={userName}
+          userEmail={userEmail}
+          active={active}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+      </div>
+
       <div className="md:ml-72">
-        <TopBar title={active ? active : title} userName={userName} />
-        
-        <main className="pt-16">
+        <TopBar onMenuClick={() => setIsSidebarOpen(true)} userName={userName} />
+
+        <main>
           <div className="px-6 py-8">
             {children}
           </div>

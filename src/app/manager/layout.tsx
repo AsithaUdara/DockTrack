@@ -24,7 +24,7 @@ export default function ManagerRouteLayout({
       <button
         aria-label="Open menu"
         onClick={() => setOpen(true)}
-        className="fixed top-3 left-3 z-[60] md:hidden rounded-lg p-2 bg-white/95 border border-gray-200 shadow hover:bg-white"
+        className="fixed top-3 left-3 z-60 md:hidden rounded-lg p-2 bg-white/95 border border-gray-200 shadow hover:bg-white"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

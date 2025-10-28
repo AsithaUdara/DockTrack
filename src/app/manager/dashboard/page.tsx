@@ -65,7 +65,7 @@ export default function ManagerDashboard() {
       >
         <div className="min-h-[60vh] flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#003d82] mx-auto mb-4" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
             <p className="text-gray-600">Loading dashboard...</p>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function ManagerDashboard() {
     >
       {/* Page Title */}
       <div className="mb-5 sm:mb-7">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0a3b76]">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">
           Operations Dashboard
         </h1>
         <p className="mt-1 text-sm sm:text-base text-slate-600">
@@ -99,10 +99,10 @@ export default function ManagerDashboard() {
         <section className="sm:col-span-2 lg:col-span-2">
           <div className="bg-white rounded-2xl border border-slate-200 shadow hover:shadow-md transition-shadow">
             <div className="px-5 pt-5 pb-3">
-              <h2 className="text-base sm:text-lg font-semibold text-slate-900">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
                 Pending Approvals
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 Review and approve daily reports from supervisors
               </p>
             </div>
@@ -117,12 +117,12 @@ export default function ManagerDashboard() {
 
         {/* Recent Activities */}
         <section className="sm:col-span-1 lg:col-span-1">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow hover:shadow-md transition-shadow">
             <div className="px-5 pt-5 pb-3">
-              <h2 className="text-base sm:text-lg font-semibold text-slate-900">
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
                 Recent Activities
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 Latest updates across your projects
               </p>
             </div>

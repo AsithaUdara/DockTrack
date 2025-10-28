@@ -2,6 +2,7 @@
 // Manager Dashboard Mock Data
 
 import { Project, DashboardStats, RecentActivity } from '@/types/project.types';
+export type { Project } from '@/types/project.types';
 
 export const mockProjects: Project[] = [
   // ACTIVE PROJECTS (showing on dashboard)
@@ -19,24 +20,9 @@ export const mockProjects: Project[] = [
     workers: 85,
     priority: 'high',
     projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9458406-352004098-6aec25d233e29db4614ab3db8abf8936/1' // Specific image for Ocean Voyager
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/9458406-352004098-6aec25d233e29db4614ab3db8abf8936/1'
   },
-  {
-    id: 'proj-002',
-    vesselName: 'SS Maritime Express',
-    projectType: 'Hull Inspection',
-    manager: 'Sarah Fernando',
-    status: 'At Risk',
-    progress: 50,
-    startDate: '2025-01-20',
-    endDate: '2025-12-10',
-    pendingReports: 1,
-    totalReports: 28,
-    workers: 45,
-    priority: 'medium',
-    projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9293611-538004385-cf3a8e7bc899279c3af5c52f9a77f60d/1' // Specific image for Maritime Express (tanker)
-  },
+  
   {
     id: 'proj-003',
     vesselName: 'Container Ship Alpha',
@@ -51,7 +37,7 @@ export const mockProjects: Project[] = [
     workers: 120,
     priority: 'high',
     projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9776418-477000700-87654321dcba/1' // Specific image for Container Ship Alpha
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/9173329-211265530-d55c588724f2de2b31cac3793119d6a0/1?v1'
   },
   {
     id: 'proj-004',
@@ -67,7 +53,7 @@ export const mockProjects: Project[] = [
     workers: 60,
     priority: 'low',
     projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9383937-311000210-1a2b3c4d5e6f7g8h9i0j/1' // Specific image for Pacific Dawn (cruise)
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/0-238715240-6b8b4f7a34257c79b18c45ecea89609d/1?v1'
   },
   {
     id: 'proj-005',
@@ -83,7 +69,7 @@ export const mockProjects: Project[] = [
     workers: 95,
     priority: 'high',
     projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9458407-352004099-8feb96d344e29db4614ab3db8abf8937/1' // Generic cargo/ocean image
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/0-261009503-97da1b58a01f9fbd5054e9f98ccd5f1a/1?v1'
   },
   {
     id: 'proj-006',
@@ -99,7 +85,7 @@ export const mockProjects: Project[] = [
     workers: 40,
     priority: 'medium',
     projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9595863-566789124-1h2g3f4e5d6c7b8a/1' // Specific image for Atlantic Star (bulk carrier)
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/9474292-249301000-09d800a4be13f323932372645b766358/1?v1'
   },
   {
     id: 'proj-007',
@@ -115,88 +101,10 @@ export const mockProjects: Project[] = [
     workers: 70,
     priority: 'medium',
     projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9293612-538004386-1234a8e7bc899279c3af5c52f9a77f60e/1' // Tanker image
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/9380398-240787000-451e1139d1632f2317dfab708c1703ca/1?v1'
   },
-  {
-    id: 'proj-008',
-    vesselName: 'MV Indian Ocean',
-    projectType: 'Electrical System Upgrade',
-    manager: 'Lakshmi Perera',
-    status: 'At Risk',
-    progress: 40,
-    startDate: '2025-01-18',
-    endDate: '2025-11-28',
-    pendingReports: 4,
-    totalReports: 25,
-    workers: 55,
-    priority: 'high',
-    projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9458408-352004100-cdefg8h9i0jklmno/1' // Another generic ocean image
-  },
-  {
-    id: 'proj-009',
-    vesselName: 'SS Southern Cross',
-    projectType: 'Navigation System Overhaul',
-    manager: 'Chaminda Silva',
-    status: 'On Track',
-    progress: 80,
-    startDate: '2024-12-20',
-    endDate: '2025-10-30',
-    pendingReports: 0,
-    totalReports: 18,
-    workers: 30,
-    priority: 'low',
-    projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9383936-311000209-0b9e6d234a87d54c12f98b76e543a21c/1' // Cruise/passenger ship image
-  },
-  {
-    id: 'proj-010',
-    vesselName: 'Container Ship Delta',
-    projectType: 'Complete Refit',
-    manager: 'Saman Wijesinghe',
-    status: 'On Track',
-    progress: 15,
-    startDate: '2025-02-10',
-    endDate: '2026-01-15',
-    pendingReports: 1,
-    totalReports: 8,
-    workers: 150,
-    priority: 'high',
-    projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9776419-477000701-12345678abcd/1' // Another container ship image
-  },
-  {
-    id: 'proj-011',
-    vesselName: 'MV Coral Bay',
-    projectType: 'Hull Painting',
-    manager: 'Dilini Fernando',
-    status: 'On Track',
-    progress: 70,
-    startDate: '2025-01-22',
-    endDate: '2025-11-10',
-    pendingReports: 0,
-    totalReports: 12,
-    workers: 35,
-    priority: 'low',
-    projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9458409-352004101-pqrstuvwxyzabc/1' // Another generic ocean image
-  },
-  {
-    id: 'proj-012',
-    vesselName: 'Bulk Carrier Epsilon',
-    projectType: 'Cargo Hold Repair',
-    manager: 'Anil Rodrigo',
-    status: 'At Risk',
-    progress: 55,
-    startDate: '2025-01-12',
-    endDate: '2025-11-25',
-    pendingReports: 3,
-    totalReports: 35,
-    workers: 80,
-    priority: 'medium',
-    projectStatus: 'active',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9595864-566789125-ijklmn2opqrs/1' // Bulk carrier image
-  },
+ 
+  
 
   // COMPLETED PROJECTS
   {
@@ -213,7 +121,7 @@ export const mockProjects: Project[] = [
     workers: 75,
     priority: 'medium',
     projectStatus: 'completed',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9383938-311000211-klmnop1qrstu/1' // Cruise ship image
+    imageUrl: 'https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=500&h=350&fit=crop&q=80'
   },
   {
     id: 'proj-014',
@@ -229,7 +137,7 @@ export const mockProjects: Project[] = [
     workers: 90,
     priority: 'high',
     projectStatus: 'completed',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9293613-538004387-fghijk7lmnopq/1' // Tanker image
+    imageUrl: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=500&h=350&fit=crop&q=80'
   },
   {
     id: 'proj-015',
@@ -245,7 +153,7 @@ export const mockProjects: Project[] = [
     workers: 55,
     priority: 'medium',
     projectStatus: 'completed',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9458406-352004098-6aec25d233e29db4614ab3db8abf8936/1' // Generic cargo/ocean image
+    imageUrl: 'https://images.unsplash.com/photo-1568481445378-2eeb6e5eb0fc?w=500&h=350&fit=crop&q=80'
   },
 
   // UPCOMING PROJECTS
@@ -263,7 +171,7 @@ export const mockProjects: Project[] = [
     workers: 0,
     priority: 'high',
     projectStatus: 'upcoming',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9712345-367000123-abcdef123456/1' // Dry dock image
+    imageUrl: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=500&h=350&fit=crop&q=80'
   },
   {
     id: 'proj-017',
@@ -279,7 +187,7 @@ export const mockProjects: Project[] = [
     workers: 0,
     priority: 'medium',
     projectStatus: 'upcoming',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9293614-538004388-rstuvwxzyabcd/1' // Tanker image
+    imageUrl: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=500&h=350&fit=crop&q=80'
   },
   {
     id: 'proj-018',
@@ -295,7 +203,7 @@ export const mockProjects: Project[] = [
     workers: 0,
     priority: 'low',
     projectStatus: 'upcoming',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9776420-477000702-efghij9klmno/1' // Container ship image
+    imageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&h=350&fit=crop&q=80'
   },
 
   // CANCELLED PROJECTS
@@ -313,26 +221,11 @@ export const mockProjects: Project[] = [
     workers: 0,
     priority: 'low',
     projectStatus: 'cancelled',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9383939-311000212-vwxyzab0cdef/1' // Cruise ship image
+    imageUrl: 'https://images.unsplash.com/photo-1568481445378-2eeb6e5eb0fc?w=500&h=350&fit=crop&q=80'
   },
 
   // ON HOLD PROJECTS
-  {
-    id: 'proj-020',
-    vesselName: 'Bulk Carrier Sigma',
-    projectType: 'Hatch Cover Repair',
-    manager: 'Lakshmi Perera',
-    status: 'At Risk',
-    progress: 30,
-    startDate: '2025-01-10',
-    endDate: '2025-12-20',
-    pendingReports: 0,
-    totalReports: 12,
-    workers: 0,
-    priority: 'medium',
-    projectStatus: 'on-hold',
-    imageUrl: 'https://static.vesselfinder.net/ship-photo/9595865-566789126-tuvwxyz3abcd/1' // Bulk carrier image
-  }
+  
 ];
 
 export const mockDashboardStats: DashboardStats = {
@@ -346,50 +239,114 @@ export const mockRecentActivities: RecentActivity[] = [
   {
     id: 'act-001',
     type: 'report',
-    title: 'New daily report submitted for MV Ocean Voyager',
+    title: 'Report submitted',
     project: 'MV Ocean Voyager',
     timestamp: '10 hours ago'
   },
   {
     id: 'act-002',
     type: 'alert',
-    title: 'Critical safety issue reported on Container Ship Alpha',
+    title: 'Safety issue reported',
     project: 'Container Ship Alpha',
     timestamp: '11 hours ago'
   },
   {
     id: 'act-003',
     type: 'approval',
-    title: 'Report approved for SS Maritime Express',
+    title: 'Report approved',
     project: 'SS Maritime Express',
     timestamp: '11 hours ago'
   },
   {
     id: 'act-004',
     type: 'report',
-    title: 'Weekly progress report submitted for Cargo Vessel Beta',
+    title: 'Progress updated',
     project: 'Cargo Vessel Beta',
     timestamp: '12 hours ago'
   },
   {
     id: 'act-005',
     type: 'alert',
-    title: 'Equipment malfunction reported on MV Indian Ocean',
+    title: 'Equipment issue reported',
     project: 'MV Indian Ocean',
     timestamp: '14 hours ago'
   },
   {
     id: 'act-006',
     type: 'approval',
-    title: 'Budget approval for MV Atlantic Star',
+    title: 'Budget approved',
     project: 'MV Atlantic Star',
     timestamp: '15 hours ago'
   },
   {
     id: 'act-007',
     type: 'report',
-    title: 'Inspection report completed for Tanker Ship Gamma',
+    title: 'Inspection completed',
     project: 'Tanker Ship Gamma',
     timestamp: '16 hours ago'
+  }
+];
+
+// Supervisor-facing project type extends base Project with additional fields used by Supervisor UI
+export interface SupervisorProject extends Project {
+  projectId: string;
+  dockNo: string;
+}
+
+// Dedicated dataset for Supervisor UI with required fields present
+export const mockSupervisorProjects: SupervisorProject[] = [
+  {
+    id: 'proj-001',
+    projectId: 'DT-2025-001',
+    dockNo: 'Dock 3',
+    vesselName: 'MV Ocean Voyager',
+    projectType: 'Repair & Maintenance',
+    manager: 'John Silva',
+    status: 'On Track',
+    progress: 75,
+    startDate: '2025-01-15',
+    endDate: '2025-11-15',
+    pendingReports: 3,
+    totalReports: 45,
+    workers: 85,
+    priority: 'high',
+    projectStatus: 'active',
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/9458406-352004098-6aec25d233e29db4614ab3db8abf8936/1'
+  },
+  {
+    id: 'proj-004',
+    projectId: 'DT-2025-004',
+    dockNo: 'Dock 1',
+    vesselName: 'MV Pacific Dawn',
+    projectType: 'Annual Survey',
+    manager: 'Michael De Silva',
+    status: 'On Track',
+    progress: 90,
+    startDate: '2024-12-10',
+    endDate: '2025-11-01',
+    pendingReports: 0,
+    totalReports: 52,
+    workers: 60,
+    priority: 'low',
+    projectStatus: 'active',
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/0-238715240-6b8b4f7a34257c79b18c45ecea89609d/1?v1'
+  },
+  {
+    id: 'proj-006',
+    projectId: 'DT-2025-006',
+    dockNo: 'Dock 7',
+    vesselName: 'MV Atlantic Star',
+    projectType: 'Propeller Replacement',
+    manager: 'Rajesh Kumar',
+    status: 'On Track',
+    progress: 60,
+    startDate: '2025-01-25',
+    endDate: '2025-11-20',
+    pendingReports: 1,
+    totalReports: 22,
+    workers: 40,
+    priority: 'medium',
+    projectStatus: 'active',
+    imageUrl: 'https://static.vesselfinder.net/ship-photo/9474292-249301000-09d800a4be13f323932372645b766358/1?v1'
   }
 ];
