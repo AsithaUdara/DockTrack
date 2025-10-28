@@ -11,8 +11,8 @@ export const mockUsers: User[] = [
   },
   {
     id: 'user-002',
-    name: 'Manager Isumi',
-    email: 'manager@cdl.lk',
+    name: 'Department Head Isumi',
+    email: 'depthead@cdl.lk',
     role: 'Manager',
     password: 'password123',
   },

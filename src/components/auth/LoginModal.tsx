@@ -54,12 +54,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
 
   const handleQuickLogin = (role: UserRole) => {
-    // Only highlight email box and show error
-    setError('Please enter username and password');
-    setHighlightEmail(true);
-
-    // Optional: you could also reset password if you want
-    setPassword('');
+    setError('Please enter username and password'); // show the error message
+    setHighlightEmail(true); // turn on highlight
   };
 
 
@@ -131,7 +127,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         </form>
 
         <div className="mt-6">
-          <p className="text-center text-xs font-medium text-gray-400 uppercase">For Prototype Demo</p>
+          <p className="text-center text-xs font-medium text-gray-400 uppercase">Accessible Users</p>
           <div className="flex justify-center space-x-2 mt-2">
             <button onClick={() => handleQuickLogin('Supervisor')} className="text-xs text-blue-700 hover:underline">Supervisor</button>
             <span className="text-gray-300">|</span>
