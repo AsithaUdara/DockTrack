@@ -6,6 +6,7 @@ import CameraCapture from '@/components/supervisor/capture/CameraCapture';
 import PhotoPreview from '@/components/supervisor/capture/PhotoPreview';
 import PhotoAnnotation from '@/components/supervisor/capture/PhotoAnnotation';
 import PhotoGallery from '@/components/supervisor/capture/PhotoGallery';
+import { useRouter } from 'next/navigation';
 
 // Define the steps in our capture process
 type CaptureMode = 'CAPTURE' | 'PREVIEW' | 'ANNOTATE';
