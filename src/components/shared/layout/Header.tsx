@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 // Import components and mock data
 import NotificationPanel from '../NotificationPanel';
-import { mockNotifications, unreadCount } from '@/data/mock-notifications';
+import { mockNotifications, unreadCount } from '../../../data/mock-notifications';
 
 // Corrected NavKey to match the image categories: Dashboard, Projects, Reports, Resources
 type NavKey = 'Dashboard' | 'Projects' | 'Reports' | 'Resources';
