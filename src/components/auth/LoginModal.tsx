@@ -96,6 +96,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               className={`w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 text-gray-800 ${highlightEmail ? 'border-blue-500 ring-blue-500' : 'border-gray-300 focus:ring-blue-500'
                 }`}
             />
+
           </div>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3">

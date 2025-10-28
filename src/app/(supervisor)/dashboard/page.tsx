@@ -5,6 +5,7 @@ import { mockSupervisorReports } from '@/data/mock-reports';
 import { Report, ReportStatus } from '@/types/report.types';
 import { mockSupervisorProjects, Project } from '@/data/mock-projects';
 import ProjectSelectorModal from '@/components/supervisor/ProjectSelectorModal';
+import { useRouter } from 'next/navigation';
 
 const StatCard = ({ title, value, icon }: { title: string; value: string; icon: React.ReactElement }) => (
   <div className="bg-white p-5 rounded-lg border border-gray-200 flex items-center">
@@ -42,6 +43,8 @@ export default function SupervisorDashboard() {
   const [activeProject, setActiveProject] = useState<Project>(mockSupervisorProjects[0]);
   const [isModalOpen, setModalOpen] = useState(false);
 
+  const router = useRouter();
+
   const handleProjectSelect = (project: Project) => {
     setActiveProject(project);
     setModalOpen(false);
@@ -64,10 +67,15 @@ export default function SupervisorDashboard() {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Welcome back, Supervisor Udara</h1>
           <p className="text-gray-600 mt-1">Here's a summary of your projects for today.</p>
         </div>
-        <button className="mt-4 md:mt-0 w-full md:w-auto flex items-center justify-center px-5 py-2.5 bg-blue-800 text-white font-semibold rounded-lg hover:bg-blue-900 transition-colors shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-          Start New Report
-        </button>
+        <button
+  onClick={() => router.push('/reports/new')}
+  className="mt-4 md:mt-0 w-full md:w-auto flex items-center justify-center px-5 py-2.5 bg-blue-800 text-white font-semibold rounded-lg hover:bg-blue-900 transition-colors shadow-sm"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+  </svg>
+  Start New Report
+</button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
