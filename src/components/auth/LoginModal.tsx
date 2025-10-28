@@ -126,7 +126,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         </form>
 
         <div className="mt-6">
-          <p className="text-center text-xs font-medium text-gray-400 uppercase">For Prototype Demo</p>
+          <p className="text-center text-xs font-medium text-gray-400 uppercase">Accessible Users</p>
           <div className="flex justify-center space-x-2 mt-2">
             <button onClick={() => handleQuickLogin('Supervisor')} className="text-xs text-blue-700 hover:underline">Supervisor</button>
             <span className="text-gray-300">|</span>
