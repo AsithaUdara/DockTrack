@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { mockSupervisorReports } from '@/data/mock-reports';
 import { Report, ReportStatus } from '@/types/report.types';
-import { mockSupervisorProjects, Project } from '@/data/mock-projects';
+import { mockSupervisorProjects, SupervisorProject } from '@/data/mock-projects';
 import ProjectSelectorModal from '@/components/supervisor/ProjectSelectorModal';
 import { useRouter } from 'next/navigation';
 

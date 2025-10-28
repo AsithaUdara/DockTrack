@@ -1,10 +1,10 @@
 // src/components/supervisor/ProjectSelectorModal.tsx
-import { mockSupervisorProjects, Project } from "@/data/mock-projects";
+import { mockSupervisorProjects, SupervisorProject } from "@/data/mock-projects";
 
 interface ProjectSelectorModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectProject: (project: Project) => void;
+  onSelectProject: (project: SupervisorProject) => void;
   currentProjectId: string;
 }
 
@@ -17,7 +17,7 @@ export default function ProjectSelectorModal({ isOpen, onClose, onSelectProject,
         <h2 className="text-xl font-bold text-gray-800">Select Active Project</h2>
         <p className="text-gray-500 mb-4">Choose the project you are working on today.</p>
         <div className="space-y-2">
-          {mockSupervisorProjects.map(project => (
+          {mockSupervisorProjects.map((project: SupervisorProject) => (
             <div 
               key={project.id}
               onClick={() => onSelectProject(project)}

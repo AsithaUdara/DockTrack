@@ -1,366 +1,290 @@
 // src/data/mock-reports.ts
-import { Report, DetailedReport, ReportSummary } from '@/types/report.types';
+// Mock data for Manager and Supervisor Reports
 
-export const mockSupervisorReports: Report[] = [
-  // Pending
-  { id: 'REP-001', vesselName: 'MV Sea Princess', date: '2025-10-21', dayOfProject: 12, status: 'Pending' },
+import type { Report as ManagerReport } from '@/types/project.types';
+import type { Report as SupervisorReport } from '@/types/report.types';
 
-  // Drafts
-  { id: 'REP-002', vesselName: 'MV Ocean Star', date: '2025-10-21', dayOfProject: 5, status: 'Draft' },
-  { id: 'REP-003', vesselName: 'MV Sea Princess', date: '2025-10-20', dayOfProject: 11, status: 'Draft' },
-
-  // Approved
-  { id: 'REP-004', vesselName: 'MV Sea Princess', date: '2025-10-19', dayOfProject: 10, status: 'Approved' },
-  { id: 'REP-005', vesselName: 'MV Sea Princess', date: '2025-10-18', dayOfProject: 9, status: 'Approved' },
-  { id: 'REP-006', vesselName: 'MV Sea Princess', date: '2025-10-17', dayOfProject: 8, status: 'Approved' },
-
-  // Revision
-  { id: 'REP-007', vesselName: 'MV Pacific Dawn', date: '2025-10-20', dayOfProject: 18, status: 'Revision' },
-];
-
-export const mockDetailedReports: DetailedReport[] = [
+// Manager-facing reports dataset (detailed shape)
+export const mockReports: ManagerReport[] = [
   {
-    // Basic Info
-    id: 'MV-SP-D12-211025',
-    vesselName: 'MV Sea Princess',
-    date: '2025-10-21',
-    dayOfProject: 12,
+    id: 'rep-001',
+    projectId: 'proj-001',
+    projectName: 'MV Ocean Voyager - Repair & Maintenance',
+    reportType: 'Daily Progress Report',
+    submittedBy: 'Supervisor Kamal Perera',
+    submittedDate: '2025-10-24',
     status: 'Pending',
-    
-    // Extended Info
-    projectId: 'PRJ-001',
-    projectName: 'MV Sea Princess Dry Dock Repair',
-    supervisorId: 'SUP-001',
-    supervisorName: 'Asanka Fernando',
-    submittedAt: '2025-10-21 17:18',
-    overallProgress: 59,
-    
-    // Work Details
-    tasks: [
-      {
-        id: 'TASK-001',
-        workType: 'Hull Welding',
-        location: 'Port Side - Section A3',
-        plannedWork: 'Complete welding of hull plates A3-10 to A3-15 (5 plates total)',
-        actuallyCompleted: 'Completed plates A3-10 to A3-14 successfully. Plate A3-15 pending due to material shortage. (4 of 5 plates = 80%)',
-        completion: 80,
-        quality: 'Good',
-        photoIds: ['photo-001', 'photo-002', 'photo-003']
-      },
-      {
-        id: 'TASK-002',
-        workType: 'Deck Painting',
-        location: 'Main Deck - Forward Section',
-        plannedWork: 'Apply primer coat to main deck forward section',
-        actuallyCompleted: 'Completed primer application to entire forward section. Surface preparation excellent.',
-        completion: 100,
-        quality: 'Excellent',
-        photoIds: ['photo-004', 'photo-005']
-      }
-    ],
-    
-    // Manpower
-    manpower: [
-      { trade: 'Welders', workers: 8, hours: 8, totalHours: 64 },
-      { trade: 'Fitters', workers: 4, hours: 8, totalHours: 32 },
-      { trade: 'Painters', workers: 3, hours: 7, totalHours: 21 },
-      { trade: 'Electricians', workers: 2, hours: 6, totalHours: 12 },
-      { trade: 'Engineers', workers: 1, hours: 8, totalHours: 8 }
-    ],
-    totalWorkers: 18,
-    totalManHours: 137,
-    overtimeHours: 4,
-    absentees: ['Kumar (Welder) - Sick leave'],
-    
-    // Materials
-    materials: [
-      { name: 'Welding Electrodes', quantity: '12', unit: 'Kg' },
-      { name: 'Paint Primer', quantity: '25', unit: 'Liters' },
-      { name: 'Steel Plates', quantity: '4', unit: 'Sheets' },
-      { name: 'Grinding Discs', quantity: '15', unit: 'Pieces' }
-    ],
-    
-    // Equipment
-    equipment: [
-      { name: 'Welding Machine #3', hours: 8, status: 'Working' },
-      { name: 'Angle Grinder', hours: 6, status: 'Working' },
-      { name: 'Paint Sprayer', hours: 7, status: 'Needs Service', notes: 'Nozzle clogging intermittently' },
-      { name: 'Mobile Crane', hours: 4, status: 'Working' }
-    ],
-    
-    // Weather
-    weather: {
-      morning: 'Sunny',
-      afternoon: 'Partly Cloudy',
-      temperature: '28°C',
-      windSpeed: 'Low (5-10 km/h)',
-      rain: false,
-      impact: 'No Impact - Ideal working conditions'
-    },
-    
-    // Safety
-    safety: {
-      briefingConducted: true,
-      briefingTime: '7:00 AM',
-      attendees: 18,
-      ppeCompliance: 100,
-      incidents: 0
-    },
-    
-    // Issues
-    issues: [
-      {
-        id: 'ISSUE-001',
-        type: 'Material Shortage',
-        description: 'Steel plate A3-15 not available in stores. Welding work on final plate stopped at 4:30 PM. Need urgent procurement.',
-        actionTaken: 'Informed stores manager. Moved welding team to assist with deck painting to maintain productivity.',
-        impact: 'Minor',
-        timeLost: '0.5 hours',
-        priority: 'medium',
-        status: 'open',
-        managerComments: []
-      }
-    ],
-    
-    // Tomorrow's Plan
-    tomorrowPlan: {
-      date: '2025-10-22',
-      plannedWork: [
-        {
-          description: 'Complete welding plate A3-15 (when material received)',
-          location: 'Port Side - A3',
-          estimatedDuration: '2 hours',
-          priority: 'high'
-        },
-        {
-          description: 'Start deck painting - Aft section',
-          location: 'Main Deck - Aft',
-          estimatedDuration: '6 hours',
-          priority: 'medium'
-        },
-        {
-          description: 'Continue engine room inspection',
-          location: 'Engine Room',
-          estimatedDuration: '4 hours',
-          priority: 'medium'
-        },
-        {
-          description: 'Complete propeller shaft alignment',
-          location: 'Propeller Shaft Area',
-          estimatedDuration: '3 hours',
-          priority: 'high'
-        }
-      ],
-      requiredMaterials: [
-        { name: 'Steel plate A3-15', urgent: true },
-        { name: 'Additional primer paint', quantity: '20 Liters', urgent: false },
-        { name: 'Welding electrodes', quantity: '10 Kg', urgent: false }
-      ],
-      requiredEquipment: [
-        'Welding Machine #3',
-        'Paint Sprayer (needs service)',
-        'Alignment tools'
-      ],
-      expectedWorkers: 18,
-      manpowerBreakdown: {
-        'Welders': 8,
-        'Painters': 4,
-        'Fitters': 3,
-        'Electricians': 2,
-        'Engineers': 1
-      },
-      specialNotes: 'Classification society inspection team expected at 2:00 PM. Ensure welding area is ready for inspection.'
-    },
-    
-    // Photos
-    photos: [
-      {
-        id: 'photo-001',
-        url: '/images/mock/welding-work-1.jpg',
-        thumbnailUrl: '/images/mock/welding-work-1-thumb.jpg',
-        workType: 'Hull Welding',
-        location: 'Drydock 2 - Port Side',
-        description: 'Hull plate welding in progress - Section A3 port side. Welder: Nimal. Quality: Good penetration',
-        date: '2025-10-21',
-        timestamp: '10:32 AM',
-        gps: '6.9271°N, 79.8612°E',
-        fileSize: '1.2MB'
-      },
-      {
-        id: 'photo-002',
-        url: '/images/mock/welding-work-2.jpg',
-        thumbnailUrl: '/images/mock/welding-work-2-thumb.jpg',
-        workType: 'Hull Welding',
-        location: 'Drydock 2 - Port Side',
-        description: 'Completed weld joint inspection - Plate A3-12',
-        date: '2025-10-21',
-        timestamp: '10:45 AM',
-        gps: '6.9271°N, 79.8612°E',
-        fileSize: '1.1MB'
-      },
-      {
-        id: 'photo-003',
-        url: '/images/mock/welding-work-3.jpg',
-        thumbnailUrl: '/images/mock/welding-work-3-thumb.jpg',
-        workType: 'Hull Welding',
-        location: 'Drydock 2 - Port Side',
-        description: 'Overall progress - 4 plates completed',
-        date: '2025-10-21',
-        timestamp: '11:45 AM',
-        gps: '6.9271°N, 79.8612°E',
-        fileSize: '1.3MB'
-      },
-      {
-        id: 'photo-004',
-        url: '/images/mock/painting-before.jpg',
-        thumbnailUrl: '/images/mock/painting-before-thumb.jpg',
-        workType: 'Deck Painting',
-        location: 'Main Deck - Forward',
-        description: 'Before: Deck surface prepared for primer',
-        date: '2025-10-21',
-        timestamp: '11:15 AM',
-        gps: '6.9271°N, 79.8612°E',
-        fileSize: '1.0MB'
-      },
-      {
-        id: 'photo-005',
-        url: '/images/mock/painting-after.jpg',
-        thumbnailUrl: '/images/mock/painting-after-thumb.jpg',
-        workType: 'Deck Painting',
-        location: 'Main Deck - Forward',
-        description: 'After: Primer coat applied - excellent coverage',
-        date: '2025-10-21',
-        timestamp: '14:15 PM',
-        gps: '6.9271°N, 79.8612°E',
-        fileSize: '1.1MB'
-      }
-    ],
-    
-    signature: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...',
-    overallComments: 'Good progress today. Welding and painting on track. Material shortage minor issue - should resolve tomorrow. Team morale good. Quality standards maintained.',
-    
-    // Manager Review (empty for pending reports)
-    managerComments: [],
-    requiresUrgentAttention: true,
-    hasUnresolvedIssues: true
+    priority: 'high',
+    description: 'Hull welding completed. Electrical work in progress. Need approval for additional materials.'
   },
-  
-  // Add a second report that's already approved
   {
-    id: 'MV-SP-D11-201025',
-    vesselName: 'MV Sea Princess',
-    date: '2025-10-20',
-    dayOfProject: 11,
+    id: 'rep-002',
+    projectId: 'proj-001',
+    projectName: 'MV Ocean Voyager - Repair & Maintenance',
+    reportType: 'Safety Incident Report',
+    submittedBy: 'Safety Officer Nimal Silva',
+    submittedDate: '2025-10-23',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Minor injury reported. Worker slipped on wet deck. First aid administered. Investigating further.'
+  },
+  {
+    id: 'rep-003',
+    projectId: 'proj-001',
+    projectName: 'MV Ocean Voyager - Repair & Maintenance',
+    reportType: 'Material Request',
+    submittedBy: 'Supervisor Kamal Perera',
+    submittedDate: '2025-10-22',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Additional steel plates required for hull repair. Estimated 500kg needed.'
+  },
+  {
+    id: 'rep-004',
+    projectId: 'proj-002',
+    projectName: 'SS Maritime Express - Hull Inspection',
+    reportType: 'Inspection Report',
+    submittedBy: 'Inspector Rajesh Kumar',
+    submittedDate: '2025-10-24',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Hull inspection reveals corrosion in sections 3 and 4. Recommend immediate attention.'
+  },
+  {
+    id: 'rep-005',
+    projectId: 'proj-003',
+    projectName: 'Container Ship Alpha - Engine Overhaul',
+    reportType: 'Weekly Progress Report',
+    submittedBy: 'Supervisor Anil Fernando',
+    submittedDate: '2025-10-23',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Engine disassembly completed. Parts cleaning in progress. On schedule for reassembly next week.'
+  },
+  {
+    id: 'rep-006',
+    projectId: 'proj-003',
+    projectName: 'Container Ship Alpha - Engine Overhaul',
+    reportType: 'Quality Control Report',
+    submittedBy: 'QC Officer Priya Mendis',
+    submittedDate: '2025-10-22',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Quality inspection of engine components completed. 2 parts need replacement.'
+  },
+  {
+    id: 'rep-007',
+    projectId: 'proj-005',
+    projectName: 'Cargo Vessel Beta - Structural Repairs',
+    reportType: 'Delay Notification',
+    submittedBy: 'Supervisor Chaminda Dias',
+    submittedDate: '2025-10-24',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Project delayed by 3 days due to bad weather conditions. Requesting deadline extension.'
+  },
+  {
+    id: 'rep-008',
+    projectId: 'proj-005',
+    projectName: 'Cargo Vessel Beta - Structural Repairs',
+    reportType: 'Daily Progress Report',
+    submittedBy: 'Supervisor Chaminda Dias',
+    submittedDate: '2025-10-23',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Structural welding 60% complete. Painting to begin after welding inspection.'
+  },
+  {
+    id: 'rep-009',
+    projectId: 'proj-005',
+    projectName: 'Cargo Vessel Beta - Structural Repairs',
+    reportType: 'Resource Request',
+    submittedBy: 'Supervisor Chaminda Dias',
+    submittedDate: '2025-10-22',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Need 5 additional welders for 3 days to meet revised deadline.'
+  },
+  {
+    id: 'rep-010',
+    projectId: 'proj-005',
+    projectName: 'Cargo Vessel Beta - Structural Repairs',
+    reportType: 'Safety Inspection',
+    submittedBy: 'Safety Officer Lakshman Perera',
+    submittedDate: '2025-10-21',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Safety equipment check completed. All scaffolding secure. Recommend daily inspections.'
+  },
+  {
+    id: 'rep-011',
+    projectId: 'proj-005',
+    projectName: 'Cargo Vessel Beta - Structural Repairs',
+    reportType: 'Material Delivery Confirmation',
+    submittedBy: 'Logistics Officer Sunil Jayasinghe',
+    submittedDate: '2025-10-20',
+    status: 'Pending',
+    priority: 'low',
+    description: 'Steel plates and welding materials delivered. Stored in warehouse B.'
+  },
+  {
+    id: 'rep-012',
+    projectId: 'proj-006',
+    projectName: 'MV Atlantic Star - Propeller Replacement',
+    reportType: 'Progress Update',
+    submittedBy: 'Supervisor Asanka Silva',
+    submittedDate: '2025-10-24',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Old propeller removed successfully. New propeller installation scheduled for tomorrow.'
+  },
+  {
+    id: 'rep-013',
+    projectId: 'proj-007',
+    projectName: 'Tanker Ship Gamma - Tank Cleaning',
+    reportType: 'Environmental Report',
+    submittedBy: 'Environmental Officer Dilini Fernando',
+    submittedDate: '2025-10-23',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Tank cleaning waste disposal completed as per environmental regulations. Certificates attached.'
+  },
+  {
+    id: 'rep-014',
+    projectId: 'proj-007',
+    projectName: 'Tanker Ship Gamma - Tank Cleaning',
+    reportType: 'Daily Progress Report',
+    submittedBy: 'Supervisor Nuwan Bandara',
+    submittedDate: '2025-10-22',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Tanks 1-3 cleaning completed. Tank 4 cleaning in progress. Inspection scheduled for tomorrow.'
+  },
+  {
+    id: 'rep-015',
+    projectId: 'proj-008',
+    projectName: 'MV Indian Ocean - Electrical System Upgrade',
+    reportType: 'Risk Assessment',
+    submittedBy: 'Electrical Engineer Rohan Wijewardena',
+    submittedDate: '2025-10-24',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Identified potential electrical hazards in old wiring. Recommend immediate replacement before proceeding.'
+  },
+  {
+    id: 'rep-016',
+    projectId: 'proj-008',
+    projectName: 'MV Indian Ocean - Electrical System Upgrade',
+    reportType: 'Material Request',
+    submittedBy: 'Electrical Engineer Rohan Wijewardena',
+    submittedDate: '2025-10-23',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Need additional marine-grade cables and circuit breakers. Specifications attached.'
+  },
+  {
+    id: 'rep-017',
+    projectId: 'proj-008',
+    projectName: 'MV Indian Ocean - Electrical System Upgrade',
+    reportType: 'Weekly Update',
+    submittedBy: 'Supervisor Lakshmi Perera',
+    submittedDate: '2025-10-22',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Main electrical panel upgrade 40% complete. Testing equipment installed and operational.'
+  },
+  {
+    id: 'rep-018',
+    projectId: 'proj-008',
+    projectName: 'MV Indian Ocean - Electrical System Upgrade',
+    reportType: 'Safety Checklist',
+    submittedBy: 'Safety Officer Samantha De Silva',
+    submittedDate: '2025-10-21',
+    status: 'Pending',
+    priority: 'high',
+    description: 'All electrical work safety protocols reviewed. Team briefed on emergency procedures.'
+  },
+  {
+    id: 'rep-019',
+    projectId: 'proj-012',
+    projectName: 'Bulk Carrier Epsilon - Cargo Hold Repair',
+    reportType: 'Structural Assessment',
+    submittedBy: 'Structural Engineer Mahesh Rodrigo',
+    submittedDate: '2025-10-24',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Cargo hold 2 shows significant structural damage. Recommend reinforcement before loading.'
+  },
+  {
+    id: 'rep-020',
+    projectId: 'proj-012',
+    projectName: 'Bulk Carrier Epsilon - Cargo Hold Repair',
+    reportType: 'Daily Progress Report',
+    submittedBy: 'Supervisor Anil Rodrigo',
+    submittedDate: '2025-10-23',
+    status: 'Pending',
+    priority: 'medium',
+    description: 'Cargo hold 1 repairs completed. Moving to hold 2. Welding crew working in two shifts.'
+  },
+  {
+    id: 'rep-021',
+    projectId: 'proj-012',
+    projectName: 'Bulk Carrier Epsilon - Cargo Hold Repair',
+    reportType: 'Quality Inspection',
+    submittedBy: 'QC Inspector Tharaka Perera',
+    submittedDate: '2025-10-22',
+    status: 'Pending',
+    priority: 'high',
+    description: 'Quality inspection of completed welds in hold 1. Minor defects found and corrected.'
+  },
+  {
+    id: 'rep-022',
+    projectId: 'proj-004',
+    projectName: 'MV Pacific Dawn - Annual Survey',
+    reportType: 'Completion Report',
+    submittedBy: 'Survey Officer Michael De Silva',
+    submittedDate: '2025-10-20',
     status: 'Approved',
-    projectId: 'PRJ-001',
-    projectName: 'MV Sea Princess Dry Dock Repair',
-    supervisorId: 'SUP-001',
-    supervisorName: 'Asanka Fernando',
-    submittedAt: '2025-10-20 17:15',
-    overallProgress: 57,
-    tasks: [],
-    manpower: [],
-    totalWorkers: 18,
-    totalManHours: 142,
-    overtimeHours: 2,
-    absentees: [],
-    materials: [],
-    equipment: [],
-    weather: {
-      morning: 'Sunny',
-      afternoon: 'Sunny',
-      temperature: '30°C',
-      windSpeed: 'Low',
-      rain: false,
-      impact: 'No Impact'
-    },
-    safety: {
-      briefingConducted: true,
-      briefingTime: '7:00 AM',
-      attendees: 18,
-      ppeCompliance: 100,
-      incidents: 0
-    },
-    issues: [],
-    tomorrowPlan: {
-      date: '2025-10-21',
-      plannedWork: [],
-      expectedWorkers: 18
-    },
-    photos: [],
-    signature: '',
-    
-    // This one has manager review
-    managerComments: [
-      {
-        id: 'MC-001',
-        reportId: 'MV-SP-D11-201025',
-        authorId: 'MGR-001',
-        authorName: 'Rohan Silva',
-        role: 'Project Manager',
-        text: 'Report approved. Excellent progress on hull cleaning phase. Photos clearly show quality workmanship. Keep maintaining these standards throughout the project.',
-        timestamp: '2025-10-21 08:30 AM',
-        actionItems: []
-      }
-    ],
-    approvalDecision: {
-      decision: 'approved',
-      decidedBy: 'Rohan Silva',
-      decidedAt: '2025-10-21 08:30 AM',
-      notes: 'Good progress and excellent documentation.',
-      checklist: {
-        photoQuality: true,
-        dataCompleteness: true,
-        safetyCompliance: true,
-        progressRealistic: true,
-        issuesAddressed: true
-      }
-    },
-    reviewedBy: 'Rohan Silva',
-    reviewedAt: '2025-10-21 08:30 AM'
+    priority: 'low',
+    description: 'Annual survey completed successfully. All systems meet regulatory standards. Certificate issued.'
   }
 ];
 
-// ==========================================
-// HELPER FUNCTIONS
-// ==========================================
-
-/**
- * Get detailed report by ID
- */
-export function getDetailedReport(reportId: string): DetailedReport | undefined {
-  return mockDetailedReports.find(r => r.id === reportId);
-}
-
-/**
- * Get all pending reports
- */
-export function getPendingReports(): DetailedReport[] {
-  return mockDetailedReports.filter(r => r.status === 'Pending');
-}
-
-/**
- * Get reports requiring urgent attention
- */
-export function getUrgentReports(): DetailedReport[] {
-  return mockDetailedReports.filter(r => r.requiresUrgentAttention);
-}
-
-/**
- * Get report summaries (for lists)
- */
-export function getReportSummaries(): ReportSummary[] {
-  return mockDetailedReports.map(report => ({
-    id: report.id,
-    vesselName: report.vesselName,
-    date: report.date,
-    dayOfProject: report.dayOfProject,
-    status: report.status,
-    supervisorName: report.supervisorName,
-    submittedAt: report.submittedAt,
-    overallProgress: report.overallProgress,
-    issueCount: report.issues.length,
-    photoCount: report.photos.length,
-    requiresAttention: report.requiresUrgentAttention || false
-  }));
-}
+// Supervisor-facing reports dataset (simple shape)
+export const mockSupervisorReports: SupervisorReport[] = [
+  {
+    id: 'sr-001',
+    vesselName: 'MV Ocean Voyager',
+    date: '2025-10-24',
+    dayOfProject: 12,
+    status: 'Pending',
+  },
+  {
+    id: 'sr-002',
+    vesselName: 'SS Maritime Express',
+    date: '2025-10-23',
+    dayOfProject: 7,
+    status: 'Draft',
+  },
+  {
+    id: 'sr-003',
+    vesselName: 'Container Ship Alpha',
+    date: '2025-10-22',
+    dayOfProject: 19,
+    status: 'Pending',
+  },
+  {
+    id: 'sr-004',
+    vesselName: 'Cargo Vessel Beta',
+    date: '2025-10-21',
+    dayOfProject: 4,
+    status: 'Draft',
+  },
+  {
+    id: 'sr-005',
+    vesselName: 'MV Atlantic Star',
+    date: '2025-10-20',
+    dayOfProject: 28,
+    status: 'Approved',
+  },
+];

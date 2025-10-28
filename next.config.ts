@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+// next.config.js
 
 const nextConfig: NextConfig = {
   images: {
@@ -13,4 +13,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

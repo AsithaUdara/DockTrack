@@ -12,7 +12,7 @@ export default function LandingPage() {
       <main className="relative h-screen w-full flex items-center justify-center text-white text-center">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 z-0 bg-gradient-to-br from-blue-900 via-blue-800 to-gray-900"
+          className="absolute inset-0 z-0 bg-linear-to-br from-blue-900 via-blue-800 to-gray-900"
           style={{
             backgroundImage: 'url(/dockyard-bg.jpg)',
             backgroundSize: 'cover',
