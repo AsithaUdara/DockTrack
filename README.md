@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚢 DockTrack
 
-## Getting Started
+**Digital Daily Work Report & Progress Documentation System**
 
-First, run the development server:
+A comprehensive web-based platform designed for Colombo Dockyard PLC to streamline operations, enhance project visibility, and manage daily work reports with real-time insights.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.0-black.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-blue.svg)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC.svg)](https://tailwindcss.com/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📋 Table of Contents
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [User Roles](#user-roles)
+- [Key Modules](#key-modules)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Overview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+DockTrack is a modern, full-stack application built to digitize and optimize the workflow of maritime dockyard operations. The system provides role-based access for Managers, Supervisors, and Clients, enabling seamless tracking of projects, reports, resources, and communications.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Key Objectives
 
-## Deploy on Vercel
+- **Digitize Daily Reports**: Replace paper-based reporting with structured digital forms
+- **Real-time Tracking**: Monitor project progress, resource allocation, and equipment usage
+- **Enhanced Collaboration**: Facilitate communication between managers, supervisors, and clients
+- **Data-Driven Decisions**: Provide actionable insights through dashboards and analytics
+- **Photo Documentation**: Capture before/after images for quality assurance
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ✨ Features
+
+### 🔐 Authentication & Authorization
+- Role-based access control (Manager, Supervisor, Client)
+- Secure login system with modal-based authentication
+
+### 📊 Manager Dashboard
+- Overview of all active projects and statistics
+- Project health monitoring
+- Pending report approvals
+- Alert notifications for delays and issues
+- Team performance analytics
+
+### 👷 Supervisor Module
+- **Daily Task Report**: Comprehensive 6-section form covering:
+  - Basic Information (Task, Location, Weather)
+  - Resource Allocation (Man-hours, Personnel)
+  - Materials Used (Steel, Paint, Welding Rods)
+  - Equipment Used (Crane, Welding Machine, Grinder)
+  - Photo Documentation (Before/After images)
+  - Issue Reporting (Severity, Category, Description)
+- Multi-step report creation wizard
+- Real-time form validation
+- Digital signature capture
+
+### 👥 Client Portal
+- Project overview and progress tracking
+- Interactive chatbot for instant support
+- Photo gallery (before/after comparisons)
+- Contact form for inquiries
+- Real-time project status updates
+
+### 🤖 AI-Powered Chatbot
+- Project status inquiries
+- Completion date estimates
+- Maintenance recommendations
+- Contact information
+- Service details
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: [Next.js 16.0](https://nextjs.org/) with App Router
+- **UI Library**: [React 19.2](https://react.dev/)
+- **Language**: [TypeScript 5.0](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+
+### Additional Libraries
+- **PDF Generation**: jsPDF
+- **Digital Signatures**: react-signature-canvas
+- **Social Sharing**: react-share
+- **Linting**: ESLint with Next.js config
+
+### Development Tools
+- PostCSS
+- TypeScript configuration
+- ESLint configuration
+
+---
+
+## 📁 Project Structure
